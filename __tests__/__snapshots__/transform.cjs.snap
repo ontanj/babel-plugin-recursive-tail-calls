@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`transform arrowFunction 1`] = `
+"const arrowFunction = a => {
+  while (true) {
+    if (a <= 0) return a;
+    a = a - 1;
+  }
+};"
+`;
+
+exports[`transform base 1`] = `
+"function base(a) {
+  while (true) {
+    if (a <= 0) {
+      return a;
+    }
+    a = a - 1;
+  }
+}"
+`;
+
+exports[`transform defaultArgActive 1`] = `
+"function defaultArgActive(a, b = 0) {
+  while (true) {
+    if (a < b) return a;
+    a = a - 1;
+    b = 0;
+  }
+}"
+`;
+
+exports[`transform defaultArgInactive 1`] = `
+"function defaultArgInactive(a, b = 0) {
+  while (true) {
+    if (a < b) return a;
+    a = a - 1;
+    b = b + 1;
+  }
+}"
+`;
+
+exports[`transform multipleArgs 1`] = `
+"function multipleArgs(a, b) {
+  while (true) {
+    if (a < b) return a;
+    a = a - 1;
+    b = b + 1;
+  }
+}"
+`;
+
+exports[`transform undefinedArg 1`] = `
+"function undefinedArg(a, b) {
+  while (true) {
+    if (a < b) return a;
+    a = a - 1;
+    b = undefined;
+  }
+}"
+`;

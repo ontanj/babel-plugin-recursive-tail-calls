@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`no-transform noRecursion 1`] = `
+"function noRecursion(a) {
+  return func(a);
+}"
+`;
+
+exports[`no-transform notTail 1`] = `
+"function notTail(a) {
+  const c = notTail(a);
+  return c;
+}"
+`;
