@@ -10,8 +10,19 @@ export default function({ types: t }) {
 
         if (!shouldOptimize) return;
 
-        const args = f.node.params.map((identifier, index) => {
-          const argExp = path.node.arguments[index];
+        const args = f.node.params.map((param, index) => {
+          let argExp = path.node.arguments[index];
+
+          let identifier;
+
+          if (t.isIdentifier(param)) {
+            identifier = param;
+          } else if (t.isAssignmentPattern(param)) {
+            identifier = param.left;
+            if (argExp === undefined) {
+              argExp = param.right;
+            }
+          }
 
           const assignment = t.assignmentExpression("=", identifier, argExp);
           return t.expressionStatement(assignment);
