@@ -2,15 +2,15 @@ export default function({ types: t }) {
   return {
     visitor: {
       CallExpression(path) {
-        const f = path.getFunctionParent();
-        const fname = f.node.id.name;
-        const callsItself = path.node.callee.name === fname;
+        const funcPath = path.getFunctionParent();
+        const fname = getFunctionName(funcPath, t);
+        const callsItself = fname && path.node.callee.name === fname;
         const isLast = t.isReturnStatement(path.parent);
         const shouldOptimize = callsItself && isLast;
 
         if (!shouldOptimize) return;
 
-        const args = f.node.params.map((param, index) => {
+        const args = funcPath.node.params.map((param, index) => {
           let argExp = path.node.arguments[index];
 
           let identifier;
@@ -44,4 +44,13 @@ export default function({ types: t }) {
       }
     }
   }
+}
+
+function getFunctionName(functionPath, t) {
+  if (t.isFunctionDeclaration(functionPath.node)) {
+    return functionPath.node.id.name;
+  } else if (t.isArrowFunctionExpression(functionPath.node)) {
+    return functionPath.parent.id.name;
+  }
+  return undefined;
 }

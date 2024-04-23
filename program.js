@@ -5,9 +5,9 @@ function abc(a) {
   return abc(a + 1)
 }
 
-// const def = (a) => {
-//  return def(a-1)
-// }
+const def = (a) => {
+  return def(a - 1)
+}
 
 function ghi(a) {
   return abc(a)
