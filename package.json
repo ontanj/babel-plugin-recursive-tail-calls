@@ -1,0 +1,14 @@
+{
+  "name": "babel-tail-call",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "GPL",
+  "private": false,
+  "type": "module",
+  "devDependencies": {
+    "@babel/cli": "^7.24.1",
+    "@babel/core": "^7.24.4",
+    "@babel/preset-env": "^7.24.4",
+    "@babel/types": "^7.24.0"
+  }
+}
