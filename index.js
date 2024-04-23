@@ -24,6 +24,10 @@ export default function({ types: t }) {
             }
           }
 
+          if (argExp === undefined) {
+            argExp = t.identifier("undefined");
+          }
+
           const assignment = t.assignmentExpression("=", identifier, argExp);
           return t.expressionStatement(assignment);
         });

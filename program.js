@@ -33,3 +33,7 @@ function stu(a, b = 2) {
   return stu(a - 1)
 }
 
+function vwx(a, b) {
+  if (a < b) return a
+  return vwx(a - 1)
+}
