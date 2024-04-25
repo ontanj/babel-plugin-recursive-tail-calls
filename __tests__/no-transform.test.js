@@ -1,20 +1,9 @@
 import babel from '@babel/core';
 import plugin from "..";
+import { mapToTestCases } from './utils';
+import { noRecursion, notTail } from "../examples/no-transform"
 
-const noRecursion = `
-function noRecursion(a) {
-  return func(a)
-}
-`;
-
-const notTail = `
-function notTail(a) {
-  const c = notTail(a);
-  return c;
-}
-`;
-
-const cases = Object.entries({
+const cases = mapToTestCases({
   noRecursion,
   notTail
 });
