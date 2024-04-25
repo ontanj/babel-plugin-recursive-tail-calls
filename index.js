@@ -1,4 +1,4 @@
-module.exports = function({ types: t }) {
+export default function({ types: t }) {
   return {
     visitor: {
       CallExpression(path) {

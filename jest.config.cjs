@@ -1,4 +1,5 @@
 module.exports = {
-  testMatch: ["**/__tests__/**/*.?(c)js"]
+  testMatch: ["**/__tests__/**/*.?(c)js"],
+  transform: {}
 };
 

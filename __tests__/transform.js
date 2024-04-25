@@ -1,5 +1,5 @@
-const babel = require('@babel/core');
-const plugin = require("..");
+import babel from '@babel/core';
+import plugin from "..";
 
 const base = `
 function base(a) {
