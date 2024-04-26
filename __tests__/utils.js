@@ -4,6 +4,6 @@ export function mapToTestCases(cases) {
     .map(([name, func]) =>
       name.includes("arrowFunction")
         ? [name, "const arrowFunction = " + func]
-        : [name, func])
+        : [name, func],
+    );
 }
-

@@ -34,7 +34,7 @@ export function undefinedArg(a, b) {
     b = undefined;
   }
 }
-export const arrowFunction = a => {
+export const arrowFunction = (a) => {
   while (true) {
     if (a <= 0) return a;
     a = a - 1;

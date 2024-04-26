@@ -1,4 +1,4 @@
-export default function({ types: t }) {
+export default function ({ types: t }) {
   return {
     visitor: {
       CallExpression(path) {
@@ -32,18 +32,21 @@ export default function({ types: t }) {
           return t.expressionStatement(assignment);
         });
 
-        const trueLiteral = t.booleanLiteral(true)
-        const whileStatement = t.whileStatement(trueLiteral, path.parentPath.parent);
+        const trueLiteral = t.booleanLiteral(true);
+        const whileStatement = t.whileStatement(
+          trueLiteral,
+          path.parentPath.parent,
+        );
         const blockStatement = t.blockStatement([whileStatement]);
 
         path.parentPath.remove();
-        args.forEach(arg => {
-          path.parentPath.parentPath.pushContainer('body', arg);
+        args.forEach((arg) => {
+          path.parentPath.parentPath.pushContainer("body", arg);
         });
         path.parentPath.parentPath.replaceWith(blockStatement);
-      }
-    }
-  }
+      },
+    },
+  };
 }
 
 function getFunctionName(functionPath, t) {

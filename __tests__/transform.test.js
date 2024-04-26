@@ -1,4 +1,4 @@
-import babel from '@babel/core';
+import babel from "@babel/core";
 import plugin from "..";
 import {
   base,
@@ -6,7 +6,7 @@ import {
   defaultArgInactive,
   defaultArgActive,
   undefinedArg,
-  arrowFunction
+  arrowFunction,
 } from "../examples/transform";
 import { mapToTestCases } from "./utils";
 
@@ -16,13 +16,12 @@ const cases = mapToTestCases({
   defaultArgInactive,
   defaultArgActive,
   undefinedArg,
-  arrowFunction
-})
+  arrowFunction,
+});
 
 describe("transform", () => {
-  it.each(cases)('%s', (_, testCase) => {
+  it.each(cases)("%s", (_, testCase) => {
     const { code } = babel.transform(testCase, { plugins: [plugin] });
     expect(code).toMatchSnapshot();
   });
 });
-
