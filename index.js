@@ -1,52 +1,77 @@
 export default function({ types: t }) {
+  const callExpVisitor = {
+    CallExpression(path) {
+      const funcPath = path.getFunctionParent();
+      const callsItself = path.node.callee.name === this.functionName;
+      const isLast = t.isReturnStatement(path.parent);
+      const shouldOptimize = callsItself && isLast;
+
+      if (!shouldOptimize) return;
+
+      this.recursion = true;
+
+      const args = funcPath.node.params.map((param, index) => {
+        let argExp = path.node.arguments[index];
+
+        let identifier;
+
+        if (t.isIdentifier(param)) {
+          identifier = param;
+        } else if (t.isAssignmentPattern(param)) {
+          identifier = param.left;
+          if (argExp === undefined) {
+            argExp = param.right;
+          }
+        }
+
+        if (argExp === undefined) {
+          argExp = t.identifier("undefined");
+        }
+
+        const assignment = t.assignmentExpression("=", identifier, argExp);
+        return t.expressionStatement(assignment);
+      });
+
+      // remove return
+      path.parentPath.remove();
+      args.forEach((arg) => {
+        path.parentPath.parentPath.pushContainer("body", arg);
+      });
+      path.parentPath.parentPath.pushContainer("body", t.continueStatement(this.labelIdentifier));
+    },
+
+    Function(path) {
+      // skip nested functions
+      path.skip();
+    }
+  };
+
   return {
     visitor: {
-      CallExpression(path) {
-        const funcPath = path.getFunctionParent();
-        const fname = getFunctionName(funcPath, t);
-        const callsItself = fname && path.node.callee.name === fname;
-        const isLast = t.isReturnStatement(path.parent);
-        const shouldOptimize = callsItself && isLast;
+      Function(path) {
+        const functionName = getFunctionName(path, t);
+        const labelIdentifier = path.scope.generateUidIdentifier("tail-call-loop");
+        const state = {
+          recursion: false,
+          labelIdentifier,
+          functionName,
+          functionPath: path
+        }
 
-        if (!shouldOptimize) return;
+        path.traverse(callExpVisitor, state);
 
-        const args = funcPath.node.params.map((param, index) => {
-          let argExp = path.node.arguments[index];
+        if (!state.recursion) {
+          return;
+        }
 
-          let identifier;
-
-          if (t.isIdentifier(param)) {
-            identifier = param;
-          } else if (t.isAssignmentPattern(param)) {
-            identifier = param.left;
-            if (argExp === undefined) {
-              argExp = param.right;
-            }
-          }
-
-          if (argExp === undefined) {
-            argExp = t.identifier("undefined");
-          }
-
-          const assignment = t.assignmentExpression("=", identifier, argExp);
-          return t.expressionStatement(assignment);
-        });
-
-        const labelIdentifier = funcPath.scope.generateUidIdentifier("tail-call-loop");
         const whileStatement = t.whileStatement(
           t.booleanLiteral(true),
-          funcPath.node.body,
+          path.node.body,
         );
         const labeledStatement = t.labeledStatement(labelIdentifier, whileStatement);
         const blockStatement = t.blockStatement([labeledStatement]);
 
-        // remove return
-        path.parentPath.remove();
-        args.forEach((arg) => {
-          path.parentPath.parentPath.pushContainer("body", arg);
-        });
-        path.parentPath.parentPath.pushContainer("body", t.continueStatement(labelIdentifier));
-        funcPath.get("body").replaceWith(blockStatement);
+        path.get("body").replaceWith(blockStatement);
       },
     },
   };
