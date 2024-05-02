@@ -6,6 +6,7 @@
   "private": false,
   "type": "module",
   "scripts": {
+    "transform": "node examples/transformer.js",
     "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest"
   },
   "devDependencies": {
