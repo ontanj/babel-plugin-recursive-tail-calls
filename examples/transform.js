@@ -35,3 +35,14 @@ export const arrowFunction = (a) => {
   if (a <= 0) return a;
   return arrowFunction(a - 1);
 };
+
+// nested statements
+export function nestedStatements(a, b) {
+  if (a > b) {
+    if (a > 0) {
+      return nestedStatements(a - 1, b);
+    }
+    return a - b;
+  }
+  return a + b;
+}

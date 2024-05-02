@@ -2,60 +2,82 @@
 
 exports[`transform arrowFunction 1`] = `
 "const arrowFunction = a => {
-  while (true) {
+  _tailCallLoop: while (true) {
     if (a <= 0) return a;
     a = a - 1;
+    continue _tailCallLoop;
   }
 };"
 `;
 
 exports[`transform base 1`] = `
 "function base(a) {
-  while (true) {
+  _tailCallLoop: while (true) {
     if (a <= 0) {
       return a;
     }
     a = a - 1;
+    continue _tailCallLoop;
   }
 }"
 `;
 
 exports[`transform defaultArgActive 1`] = `
 "function defaultArgActive(a, b = 0) {
-  while (true) {
+  _tailCallLoop: while (true) {
     if (a < b) return a;
     a = a - 1;
     b = 0;
+    continue _tailCallLoop;
   }
 }"
 `;
 
 exports[`transform defaultArgInactive 1`] = `
 "function defaultArgInactive(a, b = 0) {
-  while (true) {
+  _tailCallLoop: while (true) {
     if (a < b) return a;
     a = a - 1;
     b = b + 1;
+    continue _tailCallLoop;
   }
 }"
 `;
 
 exports[`transform multipleArgs 1`] = `
 "function multipleArgs(a, b) {
-  while (true) {
+  _tailCallLoop: while (true) {
     if (a < b) return a;
     a = a - 1;
     b = b + 1;
+    continue _tailCallLoop;
+  }
+}"
+`;
+
+exports[`transform nestedStatements 1`] = `
+"function nestedStatements(a, b) {
+  _tailCallLoop: while (true) {
+    if (a > b) {
+      if (a > 0) {
+        a = a - 1;
+        b = b;
+        continue _tailCallLoop;
+      }
+      return a - b;
+    }
+    return a + b;
   }
 }"
 `;
 
 exports[`transform undefinedArg 1`] = `
 "function undefinedArg(a, b) {
-  while (true) {
+  _tailCallLoop: while (true) {
     if (a < b) return a;
     a = a - 1;
     b = undefined;
+    continue _tailCallLoop;
   }
 }"
 `;

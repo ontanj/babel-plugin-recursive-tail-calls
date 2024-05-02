@@ -1,4 +1,4 @@
-export default function ({ types: t }) {
+export default function({ types: t }) {
   return {
     visitor: {
       CallExpression(path) {
@@ -32,18 +32,21 @@ export default function ({ types: t }) {
           return t.expressionStatement(assignment);
         });
 
-        const trueLiteral = t.booleanLiteral(true);
+        const labelIdentifier = funcPath.scope.generateUidIdentifier("tail-call-loop");
         const whileStatement = t.whileStatement(
-          trueLiteral,
-          path.parentPath.parent,
+          t.booleanLiteral(true),
+          funcPath.node.body,
         );
-        const blockStatement = t.blockStatement([whileStatement]);
+        const labeledStatement = t.labeledStatement(labelIdentifier, whileStatement);
+        const blockStatement = t.blockStatement([labeledStatement]);
 
+        // remove return
         path.parentPath.remove();
         args.forEach((arg) => {
           path.parentPath.parentPath.pushContainer("body", arg);
         });
-        path.parentPath.parentPath.replaceWith(blockStatement);
+        path.parentPath.parentPath.pushContainer("body", t.continueStatement(labelIdentifier));
+        funcPath.get("body").replaceWith(blockStatement);
       },
     },
   };

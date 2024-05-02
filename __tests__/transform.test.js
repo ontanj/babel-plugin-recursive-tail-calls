@@ -7,6 +7,7 @@ import {
   defaultArgActive,
   undefinedArg,
   arrowFunction,
+  nestedStatements,
 } from "../examples/transform";
 import { mapToTestCases } from "./utils";
 
@@ -17,6 +18,7 @@ const cases = mapToTestCases({
   defaultArgActive,
   undefinedArg,
   arrowFunction,
+  nestedStatements,
 });
 
 describe("transform", () => {
