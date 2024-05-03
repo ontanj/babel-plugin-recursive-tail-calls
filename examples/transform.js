@@ -46,3 +46,13 @@ export function nestedStatements(a, b) {
   }
   return a + b;
 }
+
+// multiple returns
+export function multipleReturns(a, b, c) {
+  if (a < 0) return a;
+  if (b < 0) {
+    const n = b + c;
+    return multipleReturns(n, b, c + 1);
+  }
+  return multipleReturns(a + 1, b + 1, c);
+}

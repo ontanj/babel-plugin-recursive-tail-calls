@@ -8,6 +8,7 @@ import {
   undefinedArg,
   arrowFunction,
   nestedStatements,
+  multipleReturns,
 } from "../examples/transform";
 import { mapToTestCases } from "./utils";
 
@@ -19,6 +20,7 @@ const cases = mapToTestCases({
   undefinedArg,
   arrowFunction,
   nestedStatements,
+  multipleReturns
 });
 
 describe("transform", () => {

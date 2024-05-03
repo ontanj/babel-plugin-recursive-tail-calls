@@ -55,6 +55,25 @@ exports[`transform multipleArgs 1`] = `
 }"
 `;
 
+exports[`transform multipleReturns 1`] = `
+"function multipleReturns(a, b, c) {
+  _tailCallLoop: while (true) {
+    if (a < 0) return a;
+    if (b < 0) {
+      const n = b + c;
+      a = n;
+      b = b;
+      c = c + 1;
+      continue _tailCallLoop;
+    }
+    a = a + 1;
+    b = b + 1;
+    c = c;
+    continue _tailCallLoop;
+  }
+}"
+`;
+
 exports[`transform nestedStatements 1`] = `
 "function nestedStatements(a, b) {
   _tailCallLoop: while (true) {

@@ -72,3 +72,21 @@ export function nestedStatements(a, b) {
     return a + b;
   }
 }
+
+// multiple returns
+export function multipleReturns(a, b, c) {
+  _tailCallLoop8: while (true) {
+    if (a < 0) return a;
+    if (b < 0) {
+      const n = b + c;
+      a = n;
+      b = b;
+      c = c + 1;
+      continue _tailCallLoop8;
+    }
+    a = a + 1;
+    b = b + 1;
+    c = c;
+    continue _tailCallLoop8;
+  }
+}
