@@ -1,7 +1,6 @@
 export default function({ types: t }) {
   const callExpVisitor = {
     CallExpression(path) {
-      const funcPath = path.getFunctionParent();
       const callsItself = path.node.callee.name === this.functionName;
       const isLast = t.isReturnStatement(path.parent);
       const shouldOptimize = callsItself && isLast;
@@ -10,26 +9,14 @@ export default function({ types: t }) {
 
       this.recursion = true;
 
-      const args = funcPath.node.params.map((param, index) => {
-        let argExp = path.node.arguments[index];
-
-        let identifier;
-
-        if (t.isIdentifier(param)) {
-          identifier = param;
-        } else if (t.isAssignmentPattern(param)) {
-          identifier = param.left;
-          if (argExp === undefined) {
-            argExp = param.right;
-          }
-        }
-
-        if (argExp === undefined) {
-          argExp = t.identifier("undefined");
-        }
-
-        const assignment = t.assignmentExpression("=", identifier, argExp);
-        return t.expressionStatement(assignment);
+      const args = this.arguments.map(({ identifier, defaultValue }, index) => {
+        return t.expressionStatement(
+          t.assignmentExpression(
+            "=",
+            identifier,
+            path.node.arguments[index] ?? defaultValue
+          )
+        );
       });
 
       // remove return
@@ -51,11 +38,22 @@ export default function({ types: t }) {
       Function(path) {
         const functionName = getFunctionName(path, t);
         const labelIdentifier = path.scope.generateUidIdentifier("tail-call-loop");
+
+        const args = path.node.params.map((param) => {
+          if (t.isIdentifier(param)) {
+            return { identifier: param, defaultValue: t.identifier("undefined") };
+          } else if (t.isAssignmentPattern(param)) {
+            return { identifier: param.left, defaultValue: param.right };
+          }
+          throw new Error("Unsupported param expression");
+        });
+
         const state = {
           recursion: false,
           labelIdentifier,
           functionName,
-          functionPath: path
+          functionPath: path,
+          arguments: args
         }
 
         path.traverse(callExpVisitor, state);
