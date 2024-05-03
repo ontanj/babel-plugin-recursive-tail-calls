@@ -19,7 +19,7 @@ export default function({ types: t }) {
         );
       });
 
-      // remove return
+      // remove return statement
       path.parentPath.remove();
       args.forEach((arg) => {
         path.parentPath.parentPath.pushContainer("body", arg);
@@ -49,19 +49,24 @@ export default function({ types: t }) {
         });
 
         const state = {
+          // true if we should apply the transformation for this function
           recursion: false,
+          // loop label
           labelIdentifier,
+          // name of this function
           functionName,
+          // path of this function
           functionPath: path,
+          // name and default value of function argument
           arguments: args
         }
 
         path.traverse(callExpVisitor, state);
 
-        if (!state.recursion) {
-          return;
-        }
+        // abort if there is no recursion
+        if (!state.recursion) return;
 
+        // wrap function body in while loop
         const whileStatement = t.whileStatement(
           t.booleanLiteral(true),
           path.node.body,
