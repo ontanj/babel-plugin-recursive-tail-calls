@@ -4,7 +4,7 @@ exports[`transform arrowFunction 1`] = `
 "const arrowFunction = a => {
   _tailCallLoop: while (true) {
     if (a <= 0) return a;
-    a = a - 1;
+    [a] = [a - 1];
     continue _tailCallLoop;
   }
 };"
@@ -16,7 +16,7 @@ exports[`transform base 1`] = `
     if (a <= 0) {
       return a;
     }
-    a = a - 1;
+    [a] = [a - 1];
     continue _tailCallLoop;
   }
 }"
@@ -26,8 +26,7 @@ exports[`transform defaultArgActive 1`] = `
 "function defaultArgActive(a, b = 0) {
   _tailCallLoop: while (true) {
     if (a < b) return a;
-    a = a - 1;
-    b = 0;
+    [a, b] = [a - 1, 0];
     continue _tailCallLoop;
   }
 }"
@@ -37,8 +36,7 @@ exports[`transform defaultArgInactive 1`] = `
 "function defaultArgInactive(a, b = 0) {
   _tailCallLoop: while (true) {
     if (a < b) return a;
-    a = a - 1;
-    b = b + 1;
+    [a, b] = [a - 1, b + 1];
     continue _tailCallLoop;
   }
 }"
@@ -48,8 +46,7 @@ exports[`transform multipleArgs 1`] = `
 "function multipleArgs(a, b) {
   _tailCallLoop: while (true) {
     if (a < b) return a;
-    a = a - 1;
-    b = b + 1;
+    [a, b] = [a - 1, b + 1];
     continue _tailCallLoop;
   }
 }"
@@ -61,14 +58,10 @@ exports[`transform multipleReturns 1`] = `
     if (a < 0) return a;
     if (b < 0) {
       const n = b + c;
-      a = n;
-      b = b;
-      c = c + 1;
+      [a, b, c] = [n, b, c + 1];
       continue _tailCallLoop;
     }
-    a = a + 1;
-    b = b + 1;
-    c = c;
+    [a, b, c] = [a + 1, b + 1, c];
     continue _tailCallLoop;
   }
 }"
@@ -79,8 +72,7 @@ exports[`transform nestedStatements 1`] = `
   _tailCallLoop: while (true) {
     if (a > b) {
       if (a > 0) {
-        a = a - 1;
-        b = b;
+        [a, b] = [a - 1, b];
         continue _tailCallLoop;
       }
       return a - b;
@@ -94,8 +86,7 @@ exports[`transform undefinedArg 1`] = `
 "function undefinedArg(a, b) {
   _tailCallLoop: while (true) {
     if (a < b) return a;
-    a = a - 1;
-    b = undefined;
+    [a, b] = [a - 1, undefined];
     continue _tailCallLoop;
   }
 }"

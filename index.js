@@ -1,4 +1,4 @@
-export default function ({ types: t }) {
+export default function({ types: t }) {
   const callExpVisitor = {
     CallExpression(path) {
       const callsItself = path.scope.bindingIdentifierEquals(
@@ -13,20 +13,20 @@ export default function ({ types: t }) {
       this.recursion = true;
 
       const args = this.arguments.map(({ identifier, defaultValue }, index) => {
-        return t.expressionStatement(
-          t.assignmentExpression(
-            "=",
-            identifier,
-            path.node.arguments[index] ?? defaultValue,
-          ),
-        );
-      });
+        return { identifier, value: path.node.arguments[index] ?? defaultValue };
+      })
+
+      const updateExpression = t.expressionStatement(
+        t.assignmentExpression(
+          "=",
+          t.arrayPattern(args.map(({ identifier }) => identifier)),
+          t.arrayExpression(args.map(({ value }) => value)),
+        ),
+      );
 
       // remove return statement
       path.parentPath.remove();
-      args.forEach((arg) => {
-        path.parentPath.parentPath.pushContainer("body", arg);
-      });
+      path.parentPath.parentPath.pushContainer("body", updateExpression);
       path.parentPath.parentPath.pushContainer(
         "body",
         t.continueStatement(this.labelIdentifier),

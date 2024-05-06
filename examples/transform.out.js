@@ -4,7 +4,7 @@ export function base(a) {
     if (a <= 0) {
       return a;
     }
-    a = a - 1;
+    [a] = [a - 1];
     continue _tailCallLoop;
   }
 }
@@ -13,8 +13,7 @@ export function base(a) {
 export function multipleArgs(a, b) {
   _tailCallLoop2: while (true) {
     if (a < b) return a;
-    a = a - 1;
-    b = b + 1;
+    [a, b] = [a - 1, b + 1];
     continue _tailCallLoop2;
   }
 }
@@ -23,8 +22,7 @@ export function multipleArgs(a, b) {
 export function defaultArgInactive(a, b = 0) {
   _tailCallLoop3: while (true) {
     if (a < b) return a;
-    a = a - 1;
-    b = b + 1;
+    [a, b] = [a - 1, b + 1];
     continue _tailCallLoop3;
   }
 }
@@ -33,8 +31,7 @@ export function defaultArgInactive(a, b = 0) {
 export function defaultArgActive(a, b = 0) {
   _tailCallLoop4: while (true) {
     if (a < b) return a;
-    a = a - 1;
-    b = 0;
+    [a, b] = [a - 1, 0];
     continue _tailCallLoop4;
   }
 }
@@ -43,17 +40,16 @@ export function defaultArgActive(a, b = 0) {
 export function undefinedArg(a, b) {
   _tailCallLoop5: while (true) {
     if (a < b) return a;
-    a = a - 1;
-    b = undefined;
+    [a, b] = [a - 1, undefined];
     continue _tailCallLoop5;
   }
 }
 
 // arrow function
-export const arrowFunction = (a) => {
+export const arrowFunction = a => {
   _tailCallLoop6: while (true) {
     if (a <= 0) return a;
-    a = a - 1;
+    [a] = [a - 1];
     continue _tailCallLoop6;
   }
 };
@@ -63,8 +59,7 @@ export function nestedStatements(a, b) {
   _tailCallLoop7: while (true) {
     if (a > b) {
       if (a > 0) {
-        a = a - 1;
-        b = b;
+        [a, b] = [a - 1, b];
         continue _tailCallLoop7;
       }
       return a - b;
@@ -79,14 +74,10 @@ export function multipleReturns(a, b, c) {
     if (a < 0) return a;
     if (b < 0) {
       const n = b + c;
-      a = n;
-      b = b;
-      c = c + 1;
+      [a, b, c] = [n, b, c + 1];
       continue _tailCallLoop8;
     }
-    a = a + 1;
-    b = b + 1;
-    c = c;
+    [a, b, c] = [a + 1, b + 1, c];
     continue _tailCallLoop8;
   }
 }
