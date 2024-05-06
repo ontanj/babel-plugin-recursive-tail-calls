@@ -12,3 +12,15 @@ exports[`no-transform notTail 1`] = `
   return c;
 }"
 `;
+
+exports[`no-transform shadowing 1`] = `
+"function shadowing(a, b) {
+  function shadowing(a) {
+    return a + 2;
+  }
+  {
+    if (a < b) return a;
+    return shadowing(b);
+  }
+}"
+`;
