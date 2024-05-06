@@ -20,7 +20,7 @@ const cases = mapToTestCases({
   undefinedArg,
   arrowFunction,
   nestedStatements,
-  multipleReturns
+  multipleReturns,
 });
 
 describe("transform", () => {

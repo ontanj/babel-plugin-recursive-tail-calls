@@ -6,7 +6,7 @@ import { noRecursion, notTail, shadowing } from "../examples/no-transform";
 const cases = mapToTestCases({
   noRecursion,
   notTail,
-  shadowing
+  shadowing,
 });
 
 describe("no-transform", () => {

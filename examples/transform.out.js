@@ -50,7 +50,7 @@ export function undefinedArg(a, b) {
 }
 
 // arrow function
-export const arrowFunction = a => {
+export const arrowFunction = (a) => {
   _tailCallLoop6: while (true) {
     if (a <= 0) return a;
     a = a - 1;

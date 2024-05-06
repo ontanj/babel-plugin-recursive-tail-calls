@@ -1,9 +1,9 @@
-export default function({ types: t }) {
+export default function ({ types: t }) {
   const callExpVisitor = {
     CallExpression(path) {
       const callsItself = path.scope.bindingIdentifierEquals(
         path.node.callee.name,
-        this.functionIdentifier
+        this.functionIdentifier,
       );
       const isLast = t.isReturnStatement(path.parent);
       const shouldOptimize = callsItself && isLast;
@@ -17,8 +17,8 @@ export default function({ types: t }) {
           t.assignmentExpression(
             "=",
             identifier,
-            path.node.arguments[index] ?? defaultValue
-          )
+            path.node.arguments[index] ?? defaultValue,
+          ),
         );
       });
 
@@ -27,23 +27,30 @@ export default function({ types: t }) {
       args.forEach((arg) => {
         path.parentPath.parentPath.pushContainer("body", arg);
       });
-      path.parentPath.parentPath.pushContainer("body", t.continueStatement(this.labelIdentifier));
+      path.parentPath.parentPath.pushContainer(
+        "body",
+        t.continueStatement(this.labelIdentifier),
+      );
     },
 
     Function(path) {
       // skip nested functions
       path.skip();
-    }
+    },
   };
 
   return {
     visitor: {
       Function(path) {
-        const labelIdentifier = path.scope.generateUidIdentifier("tail-call-loop");
+        const labelIdentifier =
+          path.scope.generateUidIdentifier("tail-call-loop");
 
         const args = path.node.params.map((param) => {
           if (t.isIdentifier(param)) {
-            return { identifier: param, defaultValue: t.identifier("undefined") };
+            return {
+              identifier: param,
+              defaultValue: t.identifier("undefined"),
+            };
           } else if (t.isAssignmentPattern(param)) {
             return { identifier: param.left, defaultValue: param.right };
           }
@@ -60,8 +67,8 @@ export default function({ types: t }) {
           // path of this function
           functionPath: path,
           // name and default value of function argument
-          arguments: args
-        }
+          arguments: args,
+        };
 
         path.traverse(callExpVisitor, state);
 
@@ -73,7 +80,10 @@ export default function({ types: t }) {
           t.booleanLiteral(true),
           path.node.body,
         );
-        const labeledStatement = t.labeledStatement(labelIdentifier, whileStatement);
+        const labeledStatement = t.labeledStatement(
+          labelIdentifier,
+          whileStatement,
+        );
         const blockStatement = t.blockStatement([labeledStatement]);
 
         path.get("body").replaceWith(blockStatement);
