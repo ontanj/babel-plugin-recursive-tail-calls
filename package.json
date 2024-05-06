@@ -2,7 +2,7 @@
   "name": "babel-tail-call",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "GPL",
+  "license": "GPL-3.0-or-later",
   "private": false,
   "type": "module",
   "scripts": {
