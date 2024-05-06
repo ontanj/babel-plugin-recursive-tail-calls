@@ -95,3 +95,17 @@ export function fibonacci(n, a = 0, b = 1) {
     }
   }
 }
+
+// prime number
+export function isPrime(n, d = 2) {
+  _tailCallLoop10: while (true) {
+    if (n % d === 0) {
+      return false;
+    } else if (d ** 2 > n) {
+      return true;
+    } else {
+      [n, d] = [n, d + 1];
+      continue _tailCallLoop10;
+    }
+  }
+}

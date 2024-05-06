@@ -67,3 +67,14 @@ export function fibonacci(n, a = 0, b = 1) {
     return fibonacci(n - 1, b, a + b);
   }
 }
+
+// prime number
+export function isPrime(n, d = 2) {
+  if (n % d === 0) {
+    return false;
+  } else if (d ** 2 > n) {
+    return true;
+  } else {
+    return isPrime(n, d + 1);
+  }
+}
