@@ -8,3 +8,14 @@ export function notTail(a) {
   const c = notTail(a);
   return c;
 }
+
+// shadowing
+export function shadowing(a, b) {
+  function shadowing(a) {
+    return a + 2;
+  }
+  {
+    if (a < b) return a;
+    return shadowing(b);
+  }
+}
