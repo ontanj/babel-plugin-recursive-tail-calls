@@ -81,3 +81,17 @@ export function multipleReturns(a, b, c) {
     continue _tailCallLoop8;
   }
 }
+
+// fibonacci
+export function fibonacci(n, a = 0, b = 1) {
+  _tailCallLoop9: while (true) {
+    if (n === 1) {
+      return a;
+    } else if (n === 2) {
+      return b;
+    } else {
+      [n, a, b] = [n - 1, b, a + b];
+      continue _tailCallLoop9;
+    }
+  }
+}

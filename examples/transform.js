@@ -56,3 +56,14 @@ export function multipleReturns(a, b, c) {
   }
   return multipleReturns(a + 1, b + 1, c);
 }
+
+// fibonacci
+export function fibonacci(n, a = 0, b = 1) {
+  if (n === 1) {
+    return a;
+  } else if (n === 2) {
+    return b;
+  } else {
+    return fibonacci(n - 1, b, a + b);
+  }
+}
