@@ -19,3 +19,15 @@ export function shadowing(a, b) {
     return shadowing(b);
   }
 }
+
+// not constant
+export function notConstant() {
+  let f = (a, b, c) => {
+    if (a > 10) {
+      return a + b + c;
+    } else {
+      return f(a + 1, b + 1, c + 1);
+    }
+  };
+  f = () => console.log("NOTHING");
+}

@@ -41,6 +41,9 @@ export default function({ types: t }) {
   return {
     visitor: {
       Function(path) {
+        const functionIdentifier = getFunctionIdentifier(path, t);
+        if (!functionIdentifier) return;
+
         const labelIdentifier =
           path.scope.generateUidIdentifier("tail-call-loop");
 
@@ -62,7 +65,7 @@ export default function({ types: t }) {
           // loop label
           labelIdentifier,
           // identifier of this function
-          functionIdentifier: getFunctionIdentifier(path, t),
+          functionIdentifier,
           // path of this function
           functionPath: path,
           // name and default value of function argument
@@ -95,7 +98,8 @@ function getFunctionIdentifier(functionPath, t) {
   if (t.isFunctionDeclaration(functionPath.node)) {
     return functionPath.node.id;
   } else if (t.isArrowFunctionExpression(functionPath.node)) {
-    return functionPath.parent.id;
+    if (functionPath.scope.getBinding(functionPath.parent.id?.name)?.constant) {
+      return functionPath.parent.id;
+    }
   }
-  throw new Error("Unable to find function identifier");
 }
