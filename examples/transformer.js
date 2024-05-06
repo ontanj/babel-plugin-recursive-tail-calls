@@ -24,7 +24,7 @@ files.forEach((file) => {
         return;
       }
 
-      fs.writeFileSync(output, code);
+      fs.writeFileSync(output, code + "\n");
     },
   );
 });
