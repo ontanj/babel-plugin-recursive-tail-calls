@@ -24,13 +24,12 @@ export default function({ types: t }) {
         ),
       );
 
-      // remove return statement
-      path.parentPath.remove();
-      path.parentPath.parentPath.pushContainer("body", updateExpression);
-      path.parentPath.parentPath.pushContainer(
-        "body",
+      // the parent is ReturnStatement
+      path.parentPath.insertBefore(updateExpression);
+      path.parentPath.insertBefore(
         t.continueStatement(this.labelIdentifier),
       );
+      path.parentPath.remove();
     },
 
     Function(path) {
