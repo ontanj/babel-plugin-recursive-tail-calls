@@ -1,10 +1,30 @@
-export default function({ types: t }) {
+import { type NodePath, types } from "@babel/core";
+import type { CallExpression, Expression, Function, Identifier } from "@babel/types";
+
+type t = typeof types;
+
+interface State {
+  // true if we should apply the transformation for this function
+  recursion: boolean,
+  // loop label
+  labelIdentifier: Identifier,
+  // identifier of this function
+  functionIdentifier: Identifier,
+  // path of this function
+  functionPath: NodePath<Function>,
+  // name and default value of function argument
+  arguments: { identifier: Identifier, defaultValue: Expression }[]
+};
+
+export default function({ types: t }: { types: t }) {
   const callExpVisitor = {
-    CallExpression(path) {
-      const callsItself = path.scope.bindingIdentifierEquals(
-        path.node.callee.name,
-        this.functionIdentifier,
-      );
+    CallExpression(this: State, path: NodePath<CallExpression>) {
+      const callsItself =
+        t.isIdentifier(path.node.callee) &&
+        path.scope.bindingIdentifierEquals(
+          path.node.callee.name,
+          this.functionIdentifier,
+        );
       const isLast = t.isReturnStatement(path.parent);
       const shouldOptimize = callsItself && isLast;
 
@@ -20,7 +40,7 @@ export default function({ types: t }) {
         t.assignmentExpression(
           "=",
           t.arrayPattern(args.map(({ identifier }) => identifier)),
-          t.arrayExpression(args.map(({ value }) => value)),
+          t.arrayExpression(args.map(({ value }) => value as Expression)),
         ),
       );
 
@@ -32,7 +52,7 @@ export default function({ types: t }) {
       path.parentPath.remove();
     },
 
-    Function(path) {
+    Function(path: NodePath<Function>) {
       // skip nested functions
       path.skip();
     },
@@ -40,35 +60,35 @@ export default function({ types: t }) {
 
   return {
     visitor: {
-      Function(path) {
+      Function(path: NodePath<Function>) {
         const functionIdentifier = getFunctionIdentifier(path, t);
         if (!functionIdentifier) return;
+
+        // until we support ternary, we can't have expression body
+        if (t.isExpression(path.node.body)) return;
 
         const labelIdentifier =
           path.scope.generateUidIdentifier("tail-call-loop");
 
-        const args = path.node.params.map((param) => {
-          if (t.isIdentifier(param)) {
-            return {
-              identifier: param,
-              defaultValue: t.identifier("undefined"),
-            };
-          } else if (t.isAssignmentPattern(param)) {
-            return { identifier: param.left, defaultValue: param.right };
+        const args: State["arguments"] = path.node.params.map(
+          (param: typeof path.node.params[number]) => {
+            if (t.isIdentifier(param)) {
+              return {
+                identifier: param,
+                defaultValue: t.identifier("undefined"),
+              };
+            } else if (t.isAssignmentPattern(param) && t.isIdentifier(param.left)) {
+              return { identifier: param.left, defaultValue: param.right };
+            }
+            throw new Error("Unsupported param expression");
           }
-          throw new Error("Unsupported param expression");
-        });
+        );
 
-        const state = {
-          // true if we should apply the transformation for this function
+        const state: State = {
           recursion: false,
-          // loop label
           labelIdentifier,
-          // identifier of this function
           functionIdentifier,
-          // path of this function
           functionPath: path,
-          // name and default value of function argument
           arguments: args,
         };
 
@@ -94,11 +114,15 @@ export default function({ types: t }) {
   };
 }
 
-function getFunctionIdentifier(functionPath, t) {
+function getFunctionIdentifier(functionPath: NodePath<Function>, t: t) {
   if (t.isFunctionDeclaration(functionPath.node)) {
     return functionPath.node.id;
   } else if (t.isArrowFunctionExpression(functionPath.node)) {
-    if (functionPath.scope.getBinding(functionPath.parent.id?.name)?.constant) {
+    if (
+      t.isVariableDeclarator(functionPath.parent) &&
+      t.isIdentifier(functionPath.parent.id) &&
+      functionPath.scope.getBinding(functionPath.parent.id.name)?.constant
+    ) {
       return functionPath.parent.id;
     }
   }

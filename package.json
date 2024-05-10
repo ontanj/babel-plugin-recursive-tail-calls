@@ -6,15 +6,20 @@
   "private": false,
   "type": "module",
   "scripts": {
-    "transform": "node examples/transformer.js",
-    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest"
+    "transform": "tsx examples/transformer",
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
+    "build": "tsc"
   },
   "devDependencies": {
     "@babel/cli": "^7.24.1",
     "@babel/core": "^7.24.4",
     "@babel/preset-env": "^7.24.4",
     "@babel/types": "^7.24.0",
+    "@types/jest": "^29.5.12",
     "jest": "^29.7.0",
-    "prettier": "3.2.5"
+    "prettier": "3.2.5",
+    "ts-jest": "^29.1.2",
+    "tsx": "^4.9.3",
+    "typescript": "^5.4.5"
   }
 }

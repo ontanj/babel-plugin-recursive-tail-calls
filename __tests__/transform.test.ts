@@ -25,7 +25,7 @@ const cases = mapToTestCases({
 
 describe("transform", () => {
   it.each(cases)("%s", (_, testCase) => {
-    const { code } = babel.transform(testCase, { plugins: [plugin] });
-    expect(code).toMatchSnapshot();
+    const t = babel.transform(testCase, { plugins: [plugin] });
+    expect(t?.code).toMatchSnapshot();
   });
 });
