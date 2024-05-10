@@ -70,19 +70,25 @@ export default function({ types: t }: { types: t }) {
         const labelIdentifier =
           path.scope.generateUidIdentifier("tail-call-loop");
 
-        const args: State["arguments"] = path.node.params.map(
-          (param: typeof path.node.params[number]) => {
-            if (t.isIdentifier(param)) {
-              return {
-                identifier: param,
-                defaultValue: t.identifier("undefined"),
-              };
-            } else if (t.isAssignmentPattern(param) && t.isIdentifier(param.left)) {
-              return { identifier: param.left, defaultValue: param.right };
+        let args: State["arguments"]
+
+        try {
+          args = path.node.params.map(
+            (param: typeof path.node.params[number]) => {
+              if (t.isIdentifier(param)) {
+                return {
+                  identifier: param,
+                  defaultValue: t.identifier("undefined"),
+                };
+              } else if (t.isAssignmentPattern(param) && t.isIdentifier(param.left)) {
+                return { identifier: param.left, defaultValue: param.right };
+              }
+              throw new Error("Unsupported param expression");
             }
-            throw new Error("Unsupported param expression");
-          }
-        );
+          );
+        } catch (e: unknown) {
+          return;
+        }
 
         const state: State = {
           recursion: false,
