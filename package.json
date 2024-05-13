@@ -1,8 +1,9 @@
 {
-  "name": "babel-tail-call",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "GPL-3.0-or-later",
+  "name": "babel-plugin-recursive-tail-calls",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "files": ["dist"],
+  "license": "LGPL-3.0-or-later",
   "private": false,
   "type": "module",
   "scripts": {
