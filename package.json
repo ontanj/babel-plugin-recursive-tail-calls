@@ -1,6 +1,8 @@
 {
   "name": "babel-plugin-recursive-tail-calls",
   "version": "0.0.1",
+  "description": "A babel plugin for performing tail call optimization in recursive functions.",
+  "keywords": ["tail call optimization", "tco", "tail calls", "babel-plugin"],
   "main": "dist/index.js",
   "files": ["dist"],
   "license": "LGPL-3.0-or-later",
@@ -9,12 +11,12 @@
   "scripts": {
     "transform": "tsx examples/transformer",
     "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
-    "build": "tsc"
+    "build": "tsc",
+    "prepack": "yarn build",
+    "prettify": "prettier -w ."
   },
   "devDependencies": {
-    "@babel/cli": "^7.24.1",
     "@babel/core": "^7.24.4",
-    "@babel/preset-env": "^7.24.4",
     "@babel/types": "^7.24.0",
     "@types/jest": "^29.5.12",
     "jest": "^29.7.0",
@@ -22,5 +24,9 @@
     "ts-jest": "^29.1.2",
     "tsx": "^4.9.3",
     "typescript": "^5.4.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ontanj/babel-plugin-recursive-tail-calls"
   }
 }
