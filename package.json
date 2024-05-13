@@ -2,9 +2,16 @@
   "name": "babel-plugin-recursive-tail-calls",
   "version": "0.0.1",
   "description": "A babel plugin for performing tail call optimization in recursive functions.",
-  "keywords": ["tail call optimization", "tco", "tail calls", "babel-plugin"],
+  "keywords": [
+    "tail call optimization",
+    "tco",
+    "tail calls",
+    "babel-plugin"
+  ],
   "main": "dist/index.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "license": "LGPL-3.0-or-later",
   "private": false,
   "type": "module",

@@ -1,22 +1,27 @@
 import { type NodePath, types } from "@babel/core";
-import type { CallExpression, Expression, Function, Identifier } from "@babel/types";
+import type {
+  CallExpression,
+  Expression,
+  Function,
+  Identifier,
+} from "@babel/types";
 
 type t = typeof types;
 
 interface State {
   // true if we should apply the transformation for this function
-  recursion: boolean,
+  recursion: boolean;
   // loop label
-  labelIdentifier: Identifier,
+  labelIdentifier: Identifier;
   // identifier of this function
-  functionIdentifier: Identifier,
+  functionIdentifier: Identifier;
   // path of this function
-  functionPath: NodePath<Function>,
+  functionPath: NodePath<Function>;
   // name and default value of function argument
-  arguments: { identifier: Identifier, defaultValue: Expression }[]
-};
+  arguments: { identifier: Identifier; defaultValue: Expression }[];
+}
 
-export default function({ types: t }: { types: t }) {
+export default function ({ types: t }: { types: t }) {
   const callExpVisitor = {
     CallExpression(this: State, path: NodePath<CallExpression>) {
       const callsItself =
@@ -33,8 +38,11 @@ export default function({ types: t }: { types: t }) {
       this.recursion = true;
 
       const args = this.arguments.map(({ identifier, defaultValue }, index) => {
-        return { identifier, value: path.node.arguments[index] ?? defaultValue };
-      })
+        return {
+          identifier,
+          value: path.node.arguments[index] ?? defaultValue,
+        };
+      });
 
       const updateExpression = t.expressionStatement(
         t.assignmentExpression(
@@ -46,9 +54,7 @@ export default function({ types: t }: { types: t }) {
 
       // the parent is ReturnStatement
       path.parentPath.insertBefore(updateExpression);
-      path.parentPath.insertBefore(
-        t.continueStatement(this.labelIdentifier),
-      );
+      path.parentPath.insertBefore(t.continueStatement(this.labelIdentifier));
       path.parentPath.remove();
     },
 
@@ -70,21 +76,24 @@ export default function({ types: t }: { types: t }) {
         const labelIdentifier =
           path.scope.generateUidIdentifier("tail-call-loop");
 
-        let args: State["arguments"]
+        let args: State["arguments"];
 
         try {
           args = path.node.params.map(
-            (param: typeof path.node.params[number]) => {
+            (param: (typeof path.node.params)[number]) => {
               if (t.isIdentifier(param)) {
                 return {
                   identifier: param,
                   defaultValue: t.identifier("undefined"),
                 };
-              } else if (t.isAssignmentPattern(param) && t.isIdentifier(param.left)) {
+              } else if (
+                t.isAssignmentPattern(param) &&
+                t.isIdentifier(param.left)
+              ) {
                 return { identifier: param.left, defaultValue: param.right };
               }
               throw new Error("Unsupported param expression");
-            }
+            },
           );
         } catch (e: unknown) {
           return;
