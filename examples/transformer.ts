@@ -8,8 +8,8 @@ const folder = import.meta.dirname;
 const files = ["transform", "no-transform"];
 
 files.forEach((file) => {
-  const input = join(folder, file + ".js");
-  const output = join(folder, file + ".out.js");
+  const input = join(folder, file + ".before.js");
+  const output = join(folder, file + ".after.js");
 
   transformFile(
     input,

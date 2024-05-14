@@ -1,6 +1,6 @@
 import babel from "@babel/core";
 import plugin from "..";
-import { fibonacci, isPrime } from "../examples/transform";
+import { fibonacci, isPrime } from "../examples/transform.before.js";
 
 describe("execute", () => {
   it("fibonacci", () => {

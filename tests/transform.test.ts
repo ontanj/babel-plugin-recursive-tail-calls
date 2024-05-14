@@ -9,8 +9,8 @@ import {
   arrowFunction,
   nestedStatements,
   multipleReturns,
-} from "../examples/transform";
-import { mapToTestCases } from "./utils";
+} from "../examples/transform.before.js";
+import { mapToTestCases } from "./utils.js";
 
 const cases = mapToTestCases({
   base,

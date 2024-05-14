@@ -1,7 +1,7 @@
 import babel from "@babel/core";
 import plugin from "..";
-import { mapToTestCases } from "./utils";
-import { noRecursion, notTail, shadowing } from "../examples/no-transform";
+import { mapToTestCases } from "./utils.js";
+import { noRecursion, notTail, shadowing } from "../examples/no-transform.before.js";
 
 const cases = mapToTestCases({
   noRecursion,
