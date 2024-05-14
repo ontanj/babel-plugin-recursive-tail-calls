@@ -1,5 +1,5 @@
 import babel from "@babel/core";
-import plugin from "..";
+import plugin from "../plugin.js";
 import { mapToTestCases } from "./utils.js";
 import { noRecursion, notTail, shadowing } from "../examples/no-transform.before.js";
 

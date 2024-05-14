@@ -1,5 +1,5 @@
 import babel from "@babel/core";
-import plugin from "..";
+import plugin from "../plugin.js";
 import { fibonacci, isPrime } from "../examples/transform.before.js";
 
 describe("execute", () => {
