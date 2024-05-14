@@ -1,12 +1,12 @@
 module.exports = {
   extensionsToTreatAsEsm: [".ts"],
-  testMatch: ["**/__tests__/**/*.test.[jt]s"],
+  testMatch: ["**/tests/**/*.test.[jt]s"],
   transform: {
     "^.+\\.[tj]s$": [
       "ts-jest",
       {
         useESM: true,
-        tsconfig: "__tests__/tsconfig.json",
+        tsconfig: "tests/tsconfig.json",
       },
     ],
   },
