@@ -1,5 +1,5 @@
 import { transformFile } from "@babel/core";
-import { writeFileSync } from "fs";
+import { writeFile } from "fs";
 import plugin from "..";
 import { join } from "path";
 
@@ -20,11 +20,17 @@ files.forEach((file) => {
     },
     (error, data) => {
       if (error || !data) {
-        console.error(error);
+        console.error(`Error transforming ${file}:`, error);
         return;
       }
 
-      writeFileSync(output, data.code + "\n");
+      writeFile(output, data.code + "\n", (error: unknown) => {
+        if (error) {
+          console.error(`Error writing ${file}:`, error);
+        } else {
+          console.log(`Successfully transformed ${file}.`);
+        }
+      });
     },
   );
 });
