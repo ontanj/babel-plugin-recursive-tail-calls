@@ -1,6 +1,6 @@
 import { transformFile } from "@babel/core";
 import { writeFile } from "fs";
-import plugin from "../plugin.js";
+import plugin from "../../plugin.js";
 import { join } from "path";
 
 const folder = import.meta.dirname;
@@ -8,8 +8,8 @@ const folder = import.meta.dirname;
 const files = ["transform", "no-transform"];
 
 files.forEach((file) => {
-  const input = join(folder, file + ".before.js");
-  const output = join(folder, file + ".after.js");
+  const input = join(folder, "..", file + ".before.js");
+  const output = join(folder, "..", file + ".after.js");
 
   transformFile(
     input,

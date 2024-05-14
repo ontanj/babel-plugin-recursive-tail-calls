@@ -16,7 +16,7 @@
   "private": false,
   "type": "module",
   "scripts": {
-    "transform": "tsx examples/transformer",
+    "transform": "tsx examples/bin/transformer",
     "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest",
     "build": "tsc",
     "prepack": "yarn build",
