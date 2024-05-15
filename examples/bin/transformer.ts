@@ -5,7 +5,9 @@ import { join } from "path";
 
 const folder = import.meta.dirname;
 
-const files = ["transform", "no-transform"];
+const fileArgs = process.argv.slice(2);
+
+const files = fileArgs.length > 0 ? fileArgs : ["transform", "no-transform"];
 
 files.forEach((file) => {
   const input = join(folder, "..", file + ".before.js");
