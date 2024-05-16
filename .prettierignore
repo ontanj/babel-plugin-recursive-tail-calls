@@ -1,2 +1,2 @@
 tsconfig.json
-examples/*.out.js
+examples/*.after.js
