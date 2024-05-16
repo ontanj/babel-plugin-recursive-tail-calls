@@ -8,6 +8,7 @@ recursive functions.
 Download the
 [plugin](https://www.npmjs.com/package/babel-plugin-recursive-tail-calls) from
 npm, using e.g. npm or yarn.
+
 ```
 npm i babel-plugin-recursive-tail-calls
 ```
