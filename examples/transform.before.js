@@ -78,3 +78,12 @@ export function isPrime(n, d = 2) {
     return isPrime(n, d + 1);
   }
 }
+
+// no return
+export function noReturn(a, b) {
+  if (a < 10) {
+    return noReturn(a + b, b);
+  } else if (a % 2 === 0) {
+    return a;
+  }
+}

@@ -2,9 +2,12 @@
 
 exports[`transform arrowFunction 1`] = `
 "const arrowFunction = a => {
-  _tailCallLoop: while (true) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
     if (a <= 0) return a;
     [a] = [a - 1];
+    _continueRecursion = true;
     continue _tailCallLoop;
   }
 };"
@@ -12,11 +15,14 @@ exports[`transform arrowFunction 1`] = `
 
 exports[`transform base 1`] = `
 "function base(a) {
-  _tailCallLoop: while (true) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
     if (a <= 0) {
       return a;
     }
     [a] = [a - 1];
+    _continueRecursion = true;
     continue _tailCallLoop;
   }
 }"
@@ -24,9 +30,12 @@ exports[`transform base 1`] = `
 
 exports[`transform defaultArgActive 1`] = `
 "function defaultArgActive(a, b = 0) {
-  _tailCallLoop: while (true) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
     if (a < b) return a;
     [a, b] = [a - 1, 0];
+    _continueRecursion = true;
     continue _tailCallLoop;
   }
 }"
@@ -34,9 +43,12 @@ exports[`transform defaultArgActive 1`] = `
 
 exports[`transform defaultArgInactive 1`] = `
 "function defaultArgInactive(a, b = 0) {
-  _tailCallLoop: while (true) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
     if (a < b) return a;
     [a, b] = [a - 1, b + 1];
+    _continueRecursion = true;
     continue _tailCallLoop;
   }
 }"
@@ -44,9 +56,12 @@ exports[`transform defaultArgInactive 1`] = `
 
 exports[`transform multipleArgs 1`] = `
 "function multipleArgs(a, b) {
-  _tailCallLoop: while (true) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
     if (a < b) return a;
     [a, b] = [a - 1, b + 1];
+    _continueRecursion = true;
     continue _tailCallLoop;
   }
 }"
@@ -54,14 +69,18 @@ exports[`transform multipleArgs 1`] = `
 
 exports[`transform multipleReturns 1`] = `
 "function multipleReturns(a, b, c) {
-  _tailCallLoop: while (true) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
     if (a < 0) return a;
     if (b < 0) {
       const n = b + c;
       [a, b, c] = [n, b, c + 1];
+      _continueRecursion = true;
       continue _tailCallLoop;
     }
     [a, b, c] = [a + 1, b + 1, c];
+    _continueRecursion = true;
     continue _tailCallLoop;
   }
 }"
@@ -69,10 +88,13 @@ exports[`transform multipleReturns 1`] = `
 
 exports[`transform nestedStatements 1`] = `
 "function nestedStatements(a, b) {
-  _tailCallLoop: while (true) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
     if (a > b) {
       if (a > 0) {
         [a, b] = [a - 1, b];
+        _continueRecursion = true;
         continue _tailCallLoop;
       }
       return a - b;
@@ -82,11 +104,30 @@ exports[`transform nestedStatements 1`] = `
 }"
 `;
 
+exports[`transform noReturn 1`] = `
+"function noReturn(a, b) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
+    if (a < 10) {
+      [a, b] = [a + b, b];
+      _continueRecursion = true;
+      continue _tailCallLoop;
+    } else if (a % 2 === 0) {
+      return a;
+    }
+  }
+}"
+`;
+
 exports[`transform undefinedArg 1`] = `
 "function undefinedArg(a, b) {
-  _tailCallLoop: while (true) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
     if (a < b) return a;
     [a, b] = [a - 1, undefined];
+    _continueRecursion = true;
     continue _tailCallLoop;
   }
 }"

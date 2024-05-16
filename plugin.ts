@@ -15,6 +15,8 @@ interface State {
   labelIdentifier: Identifier;
   // identifier of this function
   functionIdentifier: Identifier;
+  // identifier of loop condition
+  conditionIdentifier: Identifier;
   // path of this function
   functionPath: NodePath<Function>;
   // name and default value of function argument
@@ -54,6 +56,15 @@ export default function ({ types: t }: { types: t }) {
 
       // the parent is ReturnStatement
       path.parentPath.insertBefore(updateExpression);
+      path.parentPath.insertBefore(
+        t.expressionStatement(
+          t.assignmentExpression(
+            "=",
+            this.conditionIdentifier,
+            t.booleanLiteral(true),
+          ),
+        ),
+      );
       path.parentPath.insertBefore(t.continueStatement(this.labelIdentifier));
       path.parentPath.remove();
     },
@@ -70,11 +81,15 @@ export default function ({ types: t }: { types: t }) {
         const functionIdentifier = getFunctionIdentifier(path, t);
         if (!functionIdentifier) return;
 
+        const functionBody = path.get("body");
         // until we support ternary, we can't have expression body
-        if (t.isExpression(path.node.body)) return;
+        if (!functionBody.isBlockStatement()) return;
 
         const labelIdentifier =
           path.scope.generateUidIdentifier("tail-call-loop");
+
+        const conditionIdentifier =
+          path.scope.generateUidIdentifier("continue-recursion");
 
         let args: State["arguments"];
 
@@ -103,6 +118,7 @@ export default function ({ types: t }: { types: t }) {
           recursion: false,
           labelIdentifier,
           functionIdentifier,
+          conditionIdentifier,
           functionPath: path,
           arguments: args,
         };
@@ -112,18 +128,36 @@ export default function ({ types: t }: { types: t }) {
         // abort if there is no recursion
         if (!state.recursion) return;
 
+        const conditionDeclaration = t.variableDeclaration("let", [
+          t.variableDeclarator(conditionIdentifier, t.booleanLiteral(true)),
+        ]);
+
         // wrap function body in while loop
         const whileStatement = t.whileStatement(
-          t.booleanLiteral(true),
-          path.node.body,
+          conditionIdentifier,
+          functionBody.node,
+        );
+        // insert `condition = false` first in loop
+        functionBody.unshiftContainer(
+          "body",
+          t.expressionStatement(
+            t.assignmentExpression(
+              "=",
+              conditionIdentifier,
+              t.booleanLiteral(false),
+            ),
+          ),
         );
         const labeledStatement = t.labeledStatement(
           labelIdentifier,
           whileStatement,
         );
-        const blockStatement = t.blockStatement([labeledStatement]);
+        const blockStatement = t.blockStatement([
+          conditionDeclaration,
+          labeledStatement,
+        ]);
 
-        path.get("body").replaceWith(blockStatement);
+        functionBody.replaceWith(blockStatement);
       },
     },
   };
