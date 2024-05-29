@@ -87,3 +87,39 @@ export function noReturn(a, b) {
     return a;
   }
 }
+
+// logical and
+export function logicalAnd(a, b) {
+  if (a > 100) {
+    return b;
+  }
+  return a && logicalAnd(a + 1, b + 1);
+}
+
+// logical or
+export function logicalOr(a, b) {
+  if (a > 100) {
+    return b;
+  }
+  return a || logicalOr(a + 1, b + 1);
+}
+
+// nullish coalescing
+export function nullishCoalescing(a, b) {
+  return a ?? nullishCoalescing(b > 100 ? b : null, b + 1);
+}
+
+// ternery
+export function ternery(a, b, c) {
+  return a > 10 ? c : ternery(a + b, b, c + a);
+}
+
+// combined logical ternery
+export function combinedLogicalTernery(a, b) {
+  return (
+    a > 0 &&
+    (a > 10
+      ? b || combinedLogicalTernery(a + 1, (b + 1) % 5)
+      : combinedLogicalTernery(a + 1, (b + 2) % 2))
+  );
+}

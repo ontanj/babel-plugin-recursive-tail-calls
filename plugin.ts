@@ -1,10 +1,23 @@
 import { type NodePath, types } from "@babel/core";
-import type {
-  CallExpression,
-  Expression,
-  Function,
-  Identifier,
+import template from "@babel/template";
+import { type Scope } from "@babel/traverse";
+import {
+  binaryExpression,
+  identifier,
+  logicalExpression,
+  nullLiteral,
+  variableDeclaration,
+  variableDeclarator,
+  type CallExpression,
+  type Expression,
+  type Function,
+  type Identifier,
+  type LogicalExpression,
+  type ReturnStatement,
+  type Statement,
 } from "@babel/types";
+import { type State as RecursionFinderState, tailRecursionFinder } from './tailRecursionFinder.js';
+import { isRecCall } from "./utils.js";
 
 type t = typeof types;
 
@@ -23,15 +36,10 @@ interface State {
   arguments: { identifier: Identifier; defaultValue: Expression }[];
 }
 
-export default function ({ types: t }: { types: t }) {
+export default function({ types: t }: { types: t }) {
   const callExpVisitor = {
     CallExpression(this: State, path: NodePath<CallExpression>) {
-      const callsItself =
-        t.isIdentifier(path.node.callee) &&
-        path.scope.bindingIdentifierEquals(
-          path.node.callee.name,
-          this.functionIdentifier,
-        );
+      const callsItself = isRecCall(path, this.functionIdentifier);
       const isLast = t.isReturnStatement(path.parent);
       const shouldOptimize = callsItself && isLast;
 
@@ -67,6 +75,28 @@ export default function ({ types: t }: { types: t }) {
       );
       path.parentPath.insertBefore(t.continueStatement(this.labelIdentifier));
       path.parentPath.remove();
+    },
+
+    ReturnStatement(this: State, path: NodePath<ReturnStatement>) {
+      // look for callExpression among children
+      const state: RecursionFinderState = { found: false, functionIdentifier: this.functionIdentifier };
+      path.traverse(tailRecursionFinder, state);
+      if (!state.found) return;
+
+      const returnExpression = path.get("argument");
+      if (returnExpression.isLogicalExpression()) {
+        path.replaceWithMultiple(
+          logicalExprRewrite(returnExpression.node, path.scope),
+        );
+      } else if (returnExpression.isConditionalExpression()) {
+        path.replaceWith(
+          buildIfStatement(
+            returnExpression.node.test,
+            returnExpression.node.consequent,
+            returnExpression.node.alternate,
+          ),
+        );
+      }
     },
 
     Function(path: NodePath<Function>) {
@@ -175,4 +205,57 @@ function getFunctionIdentifier(functionPath: NodePath<Function>, t: t) {
       return functionPath.parent.id;
     }
   }
+}
+
+const ifTemplate = template.statement(`
+  if (%%condition%%) {
+    return %%caseTrue%%;
+  } else {
+    return %%caseFalse%%;
+  }
+`);
+
+function buildIfStatement(
+  condition: Expression,
+  caseTrue: Expression,
+  caseFalse: Expression,
+) {
+  return ifTemplate({ condition, caseTrue, caseFalse });
+}
+
+/**
+ * rewrite a logical expression to a more explicit if statement
+ */
+function logicalExprRewrite(
+  {
+    left,
+    right,
+    operator,
+  }: Pick<LogicalExpression, "left" | "right" | "operator">,
+  scope: Scope,
+) {
+  const resultIdentifier = scope.generateUidIdentifier("left");
+  // assign left to a variable so we don't evaluate it twice
+  const resultDeclaration = variableDeclaration("const", [
+    variableDeclarator(resultIdentifier, left),
+  ]);
+
+  let ifStatement: Statement;
+  if (operator === "&&")
+    ifStatement = buildIfStatement(resultIdentifier, right, resultIdentifier);
+  else if (operator === "||")
+    ifStatement = buildIfStatement(resultIdentifier, resultIdentifier, right);
+  else if (operator === "??")
+    ifStatement = buildIfStatement(
+      logicalExpression(
+        "||",
+        binaryExpression("==", left, nullLiteral()),
+        binaryExpression("==", left, identifier("undefined")),
+      ),
+      resultIdentifier,
+      right,
+    );
+  else throw new Error("Unknown LogicalExpression operator: " + operator);
+
+  return [resultDeclaration, ifStatement];
 }

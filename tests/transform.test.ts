@@ -10,6 +10,11 @@ import {
   nestedStatements,
   multipleReturns,
   noReturn,
+  logicalAnd,
+  logicalOr,
+  nullishCoalescing,
+  ternery,
+  combinedLogicalTernery,
 } from "../examples/transform.before.js";
 import { mapToTestCases } from "./utils.js";
 
@@ -23,6 +28,11 @@ const cases = mapToTestCases({
   nestedStatements,
   multipleReturns,
   noReturn,
+  logicalAnd,
+  logicalOr,
+  nullishCoalescing,
+  ternery,
+  combinedLogicalTernery
 });
 
 describe("transform", () => {

@@ -155,3 +155,99 @@ export function noReturn(a, b) {
     }
   }
 }
+
+// logical and
+export function logicalAnd(a, b) {
+  let _continueRecursion12 = true;
+  _tailCallLoop12: while (_continueRecursion12) {
+    _continueRecursion12 = false;
+    if (a > 100) {
+      return b;
+    }
+    const _left = a;
+    if (_left) {
+      [a, b] = [a + 1, b + 1];
+      _continueRecursion12 = true;
+      continue _tailCallLoop12;
+    } else {
+      return _left;
+    }
+  }
+}
+
+// logical or
+export function logicalOr(a, b) {
+  let _continueRecursion13 = true;
+  _tailCallLoop13: while (_continueRecursion13) {
+    _continueRecursion13 = false;
+    if (a > 100) {
+      return b;
+    }
+    const _left2 = a;
+    if (_left2) {
+      return _left2;
+    } else {
+      [a, b] = [a + 1, b + 1];
+      _continueRecursion13 = true;
+      continue _tailCallLoop13;
+    }
+  }
+}
+
+// nullish coalescing
+export function nullishCoalescing(a, b) {
+  let _continueRecursion14 = true;
+  _tailCallLoop14: while (_continueRecursion14) {
+    _continueRecursion14 = false;
+    const _left3 = a;
+    if (a == null || a == undefined) {
+      return _left3;
+    } else {
+      [a, b] = [b > 100 ? b : null, b + 1];
+      _continueRecursion14 = true;
+      continue _tailCallLoop14;
+    }
+  }
+}
+
+// ternery
+export function ternery(a, b, c) {
+  let _continueRecursion15 = true;
+  _tailCallLoop15: while (_continueRecursion15) {
+    _continueRecursion15 = false;
+    if (a > 10) {
+      return c;
+    } else {
+      [a, b, c] = [a + b, b, c + a];
+      _continueRecursion15 = true;
+      continue _tailCallLoop15;
+    }
+  }
+}
+
+// combined logical ternery
+export function combinedLogicalTernery(a, b) {
+  let _continueRecursion16 = true;
+  _tailCallLoop16: while (_continueRecursion16) {
+    _continueRecursion16 = false;
+    const _left4 = a > 0;
+    if (_left4) {
+      if (a > 10) {
+        const _left5 = b;
+        if (_left5) {
+          return _left5;
+        } else {
+          [a, b] = [a + 1, (b + 1) % 5];
+          _continueRecursion16 = true;
+          continue _tailCallLoop16;
+        }
+      } else {
+        [a, b] = [a + 1, (b + 2) % 2];
+        _continueRecursion16 = true;
+        continue _tailCallLoop16;
+      }
+    } else {
+      return _left4;
+    }
+  }
+}

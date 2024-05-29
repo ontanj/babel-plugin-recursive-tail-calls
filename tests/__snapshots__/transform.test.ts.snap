@@ -28,6 +28,34 @@ exports[`transform base 1`] = `
 }"
 `;
 
+exports[`transform combinedLogicalTernery 1`] = `
+"function combinedLogicalTernery(a, b) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
+    const _left = a > 0;
+    if (_left) {
+      if (a > 10) {
+        const _left2 = b;
+        if (_left2) {
+          return _left2;
+        } else {
+          [a, b] = [a + 1, (b + 1) % 5];
+          _continueRecursion = true;
+          continue _tailCallLoop;
+        }
+      } else {
+        [a, b] = [a + 1, (b + 2) % 2];
+        _continueRecursion = true;
+        continue _tailCallLoop;
+      }
+    } else {
+      return _left;
+    }
+  }
+}"
+`;
+
 exports[`transform defaultArgActive 1`] = `
 "function defaultArgActive(a, b = 0) {
   let _continueRecursion = true;
@@ -50,6 +78,46 @@ exports[`transform defaultArgInactive 1`] = `
     [a, b] = [a - 1, b + 1];
     _continueRecursion = true;
     continue _tailCallLoop;
+  }
+}"
+`;
+
+exports[`transform logicalAnd 1`] = `
+"function logicalAnd(a, b) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
+    if (a > 100) {
+      return b;
+    }
+    const _left = a;
+    if (_left) {
+      [a, b] = [a + 1, b + 1];
+      _continueRecursion = true;
+      continue _tailCallLoop;
+    } else {
+      return _left;
+    }
+  }
+}"
+`;
+
+exports[`transform logicalOr 1`] = `
+"function logicalOr(a, b) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
+    if (a > 100) {
+      return b;
+    }
+    const _left = a;
+    if (_left) {
+      return _left;
+    } else {
+      [a, b] = [a + 1, b + 1];
+      _continueRecursion = true;
+      continue _tailCallLoop;
+    }
   }
 }"
 `;
@@ -115,6 +183,38 @@ exports[`transform noReturn 1`] = `
       continue _tailCallLoop;
     } else if (a % 2 === 0) {
       return a;
+    }
+  }
+}"
+`;
+
+exports[`transform nullishCoalescing 1`] = `
+"function nullishCoalescing(a, b) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
+    if (a !== null && a !== void 0) {
+      return a;
+    } else {
+      [a, b] = [b > 100 ? b : null, b + 1];
+      _continueRecursion = true;
+      continue _tailCallLoop;
+    }
+  }
+}"
+`;
+
+exports[`transform ternery 1`] = `
+"function ternery(a, b, c) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
+    if (a > 10) {
+      return c;
+    } else {
+      [a, b, c] = [a + b, b, c + a];
+      _continueRecursion = true;
+      continue _tailCallLoop;
     }
   }
 }"
