@@ -1,5 +1,5 @@
 import babel from "@babel/core";
-import plugin from "../plugin.js";
+import plugin from "../src/plugin.js";
 import { mapToTestCases } from "./utils.js";
 import {
   noRecursion,

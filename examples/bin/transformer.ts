@@ -1,6 +1,6 @@
 import { transformFile } from "@babel/core";
 import { writeFile } from "fs";
-import plugin from "../../plugin.js";
+import plugin from "../../src/plugin.js";
 import { join } from "path";
 
 const folder = import.meta.dirname;
