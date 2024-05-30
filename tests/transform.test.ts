@@ -13,8 +13,8 @@ import {
   logicalAnd,
   logicalOr,
   nullishCoalescing,
-  ternery,
-  combinedLogicalTernery,
+  ternary,
+  combinedLogicalTernary,
 } from "../examples/transform.before.js";
 import { mapToTestCases } from "./utils.js";
 
@@ -31,8 +31,8 @@ const cases = mapToTestCases({
   logicalAnd,
   logicalOr,
   nullishCoalescing,
-  ternery,
-  combinedLogicalTernery,
+  ternary,
+  combinedLogicalTernary,
 });
 
 describe("transform", () => {

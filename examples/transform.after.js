@@ -210,8 +210,8 @@ export function nullishCoalescing(a, b) {
   }
 }
 
-// ternery
-export function ternery(a, b, c) {
+// ternary
+export function ternary(a, b, c) {
   let _continueRecursion15 = true;
   _tailCallLoop15: while (_continueRecursion15) {
     _continueRecursion15 = false;
@@ -225,8 +225,8 @@ export function ternery(a, b, c) {
   }
 }
 
-// combined logical ternery
-export function combinedLogicalTernery(a, b) {
+// combined logical ternary
+export function combinedLogicalTernary(a, b) {
   let _continueRecursion16 = true;
   _tailCallLoop16: while (_continueRecursion16) {
     _continueRecursion16 = false;

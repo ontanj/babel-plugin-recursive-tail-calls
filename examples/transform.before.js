@@ -109,17 +109,17 @@ export function nullishCoalescing(a, b) {
   return a ?? nullishCoalescing(b > 100 ? b : null, b + 1);
 }
 
-// ternery
-export function ternery(a, b, c) {
-  return a > 10 ? c : ternery(a + b, b, c + a);
+// ternary
+export function ternary(a, b, c) {
+  return a > 10 ? c : ternary(a + b, b, c + a);
 }
 
-// combined logical ternery
-export function combinedLogicalTernery(a, b) {
+// combined logical ternary
+export function combinedLogicalTernary(a, b) {
   return (
     a > 0 &&
     (a > 10
-      ? b || combinedLogicalTernery(a + 1, (b + 1) % 5)
-      : combinedLogicalTernery(a + 1, (b + 2) % 2))
+      ? b || combinedLogicalTernary(a + 1, (b + 1) % 5)
+      : combinedLogicalTernary(a + 1, (b + 2) % 2))
   );
 }
