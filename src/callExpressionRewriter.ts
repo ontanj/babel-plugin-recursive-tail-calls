@@ -8,7 +8,6 @@ import {
   type LogicalExpression,
   type Statement,
   type ReturnStatement,
-  isReturnStatement,
   expressionStatement,
   assignmentExpression,
   arrayPattern,
@@ -54,7 +53,8 @@ export const callExpressionRewriter = {
    */
   CallExpression(this: State, path: NodePath<CallExpression>) {
     const callsItself = isRecCall(path, this.functionIdentifier);
-    const isLast = isReturnStatement(path.parent);
+    const parentPath = path.parentPath;
+    const isLast = parentPath.isReturnStatement();
     const shouldOptimize = callsItself && isLast;
 
     if (!shouldOptimize) return;
@@ -76,9 +76,8 @@ export const callExpressionRewriter = {
       ),
     );
 
-    // the parent is ReturnStatement
-    path.parentPath.insertBefore(updateExpression);
-    path.parentPath.insertBefore(
+    parentPath.insertBefore(updateExpression);
+    parentPath.insertBefore(
       expressionStatement(
         assignmentExpression(
           "=",
@@ -87,8 +86,8 @@ export const callExpressionRewriter = {
         ),
       ),
     );
-    path.parentPath.insertBefore(continueStatement(this.labelIdentifier));
-    path.parentPath.remove();
+    parentPath.insertBefore(continueStatement(this.labelIdentifier));
+    parentPath.remove();
   },
 
   /**
