@@ -4,7 +4,7 @@ import { isRecCall } from "./utils.js";
 
 export interface State {
   /** true if tail recursion is found */
-  found: boolean
+  found: boolean;
   /** identifier of function */
   functionIdentifier: Identifier;
 }
@@ -20,11 +20,8 @@ export const tailRecursionFinder = {
     if (path.isCallExpression()) {
       this.found = isRecCall(path, this.functionIdentifier);
       if (this.found) path.stop();
-    } else if (path.isLogicalExpression())
-      path.skipKey("left");
-    else if (path.isConditionalExpression())
-      path.skipKey("test");
-    else
-      path.skip();
+    } else if (path.isLogicalExpression()) path.skipKey("left");
+    else if (path.isConditionalExpression()) path.skipKey("test");
+    else path.skip();
   },
-}
+};

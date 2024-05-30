@@ -32,7 +32,7 @@ const cases = mapToTestCases({
   logicalOr,
   nullishCoalescing,
   ternery,
-  combinedLogicalTernery
+  combinedLogicalTernery,
 });
 
 describe("transform", () => {

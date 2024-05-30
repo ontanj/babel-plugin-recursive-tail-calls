@@ -1,110 +1,13 @@
 import { type NodePath, types } from "@babel/core";
-import template from "@babel/template";
-import { type Scope } from "@babel/traverse";
+import { type Function } from "@babel/types";
 import {
-  binaryExpression,
-  identifier,
-  logicalExpression,
-  nullLiteral,
-  variableDeclaration,
-  variableDeclarator,
-  type CallExpression,
-  type Expression,
-  type Function,
-  type Identifier,
-  type LogicalExpression,
-  type ReturnStatement,
-  type Statement,
-} from "@babel/types";
-import { type State as RecursionFinderState, tailRecursionFinder } from './tailRecursionFinder.js';
-import { isRecCall } from "./utils.js";
+  callExpressionRewriter,
+  type State as CallExpressionState,
+} from "./callExpressionRewriter.js";
 
 type t = typeof types;
 
-interface State {
-  // true if we should apply the transformation for this function
-  recursion: boolean;
-  // loop label
-  labelIdentifier: Identifier;
-  // identifier of this function
-  functionIdentifier: Identifier;
-  // identifier of loop condition
-  conditionIdentifier: Identifier;
-  // path of this function
-  functionPath: NodePath<Function>;
-  // name and default value of function argument
-  arguments: { identifier: Identifier; defaultValue: Expression }[];
-}
-
-export default function({ types: t }: { types: t }) {
-  const callExpVisitor = {
-    CallExpression(this: State, path: NodePath<CallExpression>) {
-      const callsItself = isRecCall(path, this.functionIdentifier);
-      const isLast = t.isReturnStatement(path.parent);
-      const shouldOptimize = callsItself && isLast;
-
-      if (!shouldOptimize) return;
-
-      this.recursion = true;
-
-      const args = this.arguments.map(({ identifier, defaultValue }, index) => {
-        return {
-          identifier,
-          value: path.node.arguments[index] ?? defaultValue,
-        };
-      });
-
-      const updateExpression = t.expressionStatement(
-        t.assignmentExpression(
-          "=",
-          t.arrayPattern(args.map(({ identifier }) => identifier)),
-          t.arrayExpression(args.map(({ value }) => value as Expression)),
-        ),
-      );
-
-      // the parent is ReturnStatement
-      path.parentPath.insertBefore(updateExpression);
-      path.parentPath.insertBefore(
-        t.expressionStatement(
-          t.assignmentExpression(
-            "=",
-            this.conditionIdentifier,
-            t.booleanLiteral(true),
-          ),
-        ),
-      );
-      path.parentPath.insertBefore(t.continueStatement(this.labelIdentifier));
-      path.parentPath.remove();
-    },
-
-    ReturnStatement(this: State, path: NodePath<ReturnStatement>) {
-      // look for callExpression among children
-      const state: RecursionFinderState = { found: false, functionIdentifier: this.functionIdentifier };
-      path.traverse(tailRecursionFinder, state);
-      if (!state.found) return;
-
-      const returnExpression = path.get("argument");
-      if (returnExpression.isLogicalExpression()) {
-        path.replaceWithMultiple(
-          logicalExprRewrite(returnExpression.node, path.scope),
-        );
-      } else if (returnExpression.isConditionalExpression()) {
-        path.replaceWith(
-          buildIfStatement(
-            returnExpression.node.test,
-            returnExpression.node.consequent,
-            returnExpression.node.alternate,
-          ),
-        );
-      }
-    },
-
-    Function(path: NodePath<Function>) {
-      // skip nested functions
-      path.skip();
-    },
-  };
-
+export default function ({ types: t }: { types: t }) {
   return {
     visitor: {
       Function(path: NodePath<Function>) {
@@ -121,7 +24,7 @@ export default function({ types: t }: { types: t }) {
         const conditionIdentifier =
           path.scope.generateUidIdentifier("continue-recursion");
 
-        let args: State["arguments"];
+        let args: CallExpressionState["arguments"];
 
         try {
           args = path.node.params.map(
@@ -144,7 +47,7 @@ export default function({ types: t }: { types: t }) {
           return;
         }
 
-        const state: State = {
+        const state: CallExpressionState = {
           recursion: false,
           labelIdentifier,
           functionIdentifier,
@@ -153,7 +56,7 @@ export default function({ types: t }: { types: t }) {
           arguments: args,
         };
 
-        path.traverse(callExpVisitor, state);
+        path.traverse(callExpressionRewriter, state);
 
         // abort if there is no recursion
         if (!state.recursion) return;
@@ -205,57 +108,4 @@ function getFunctionIdentifier(functionPath: NodePath<Function>, t: t) {
       return functionPath.parent.id;
     }
   }
-}
-
-const ifTemplate = template.statement(`
-  if (%%condition%%) {
-    return %%caseTrue%%;
-  } else {
-    return %%caseFalse%%;
-  }
-`);
-
-function buildIfStatement(
-  condition: Expression,
-  caseTrue: Expression,
-  caseFalse: Expression,
-) {
-  return ifTemplate({ condition, caseTrue, caseFalse });
-}
-
-/**
- * rewrite a logical expression to a more explicit if statement
- */
-function logicalExprRewrite(
-  {
-    left,
-    right,
-    operator,
-  }: Pick<LogicalExpression, "left" | "right" | "operator">,
-  scope: Scope,
-) {
-  const resultIdentifier = scope.generateUidIdentifier("left");
-  // assign left to a variable so we don't evaluate it twice
-  const resultDeclaration = variableDeclaration("const", [
-    variableDeclarator(resultIdentifier, left),
-  ]);
-
-  let ifStatement: Statement;
-  if (operator === "&&")
-    ifStatement = buildIfStatement(resultIdentifier, right, resultIdentifier);
-  else if (operator === "||")
-    ifStatement = buildIfStatement(resultIdentifier, resultIdentifier, right);
-  else if (operator === "??")
-    ifStatement = buildIfStatement(
-      logicalExpression(
-        "||",
-        binaryExpression("==", left, nullLiteral()),
-        binaryExpression("==", left, identifier("undefined")),
-      ),
-      resultIdentifier,
-      right,
-    );
-  else throw new Error("Unknown LogicalExpression operator: " + operator);
-
-  return [resultDeclaration, ifStatement];
 }
