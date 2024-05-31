@@ -1,5 +1,5 @@
 import { NodePath } from "@babel/core";
-import { Identifier } from "@babel/types";
+import { Expression, Identifier } from "@babel/types";
 import { isRecCall } from "./utils.js";
 
 export interface State {
@@ -25,3 +25,18 @@ export const tailRecursionFinder = {
     else path.skip();
   },
 };
+
+/**
+ * Use `tailRecursionFinder` to look for calls to `functionIdentifier` in `path`.
+ */
+export function findRecursion(
+  path: NodePath<Expression>,
+  functionIdentifier: Identifier,
+) {
+  const state: State = {
+    found: false,
+    functionIdentifier,
+  };
+  path.traverse(tailRecursionFinder, state);
+  return state.found;
+}

@@ -21,10 +21,7 @@ import {
   nullLiteral,
   identifier,
 } from "@babel/types";
-import {
-  type State as RecursionFinderState,
-  tailRecursionFinder,
-} from "./tailRecursionFinder.js";
+import { findRecursion } from "./tailRecursionFinder.js";
 import { isRecCall } from "./utils.js";
 
 export interface State {
@@ -95,13 +92,12 @@ export const callExpressionRewriter = {
    * tail position, such as `&&` or `? :`, rewrite it to be explicit.
    */
   ReturnStatement(this: State, path: NodePath<ReturnStatement>) {
-    // look for callExpression among children
-    const state: RecursionFinderState = {
-      found: false,
-      functionIdentifier: this.functionIdentifier,
-    };
-    path.traverse(tailRecursionFinder, state);
-    if (!state.found) return;
+    const argument = path.get("argument");
+    if (
+      !argument.isExpression() ||
+      !findRecursion(argument, this.functionIdentifier)
+    )
+      return;
 
     const returnExpression = path.get("argument");
     if (returnExpression.isLogicalExpression()) {

@@ -4,6 +4,7 @@ import {
   callExpressionRewriter,
   type State as CallExpressionState,
 } from "./callExpressionRewriter.js";
+import { findRecursion } from "./tailRecursionFinder.js";
 
 type t = typeof types;
 
@@ -15,8 +16,6 @@ export default function ({ types: t }: { types: t }) {
         if (!functionIdentifier) return;
 
         const functionBody = path.get("body");
-        // until we support ternary, we can't have expression body
-        if (!functionBody.isBlockStatement()) return;
 
         const labelIdentifier =
           path.scope.generateUidIdentifier("tail-call-loop");
@@ -46,6 +45,16 @@ export default function ({ types: t }: { types: t }) {
         } catch (e: unknown) {
           return;
         }
+
+        if (functionBody.isExpression()) {
+          if (!findRecursion(functionBody, functionIdentifier)) return;
+          functionBody.replaceWith(
+            t.blockStatement([t.returnStatement(functionBody.node)]),
+          );
+        }
+        // this should never happen but is added for adequate type hints
+        if (!functionBody.isBlockStatement())
+          throw new Error("Body is not block statement");
 
         const state: CallExpressionState = {
           recursion: false,
