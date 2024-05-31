@@ -123,3 +123,7 @@ export function combinedLogicalTernary(a, b) {
       : combinedLogicalTernary(a + 1, (b + 2) % 2))
   );
 }
+
+// arrow function
+export const arrowFunctionNoBody = (a) =>
+  a <= 0 ? a : arrowFunctionNoBody(a - 1);

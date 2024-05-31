@@ -13,6 +13,8 @@ exports[`transform arrowFunction 1`] = `
 };"
 `;
 
+exports[`transform arrowFunctionNoBody 1`] = `"const arrowFunction = a => a <= 0 ? a : arrowFunctionNoBody(a - 1);"`;
+
 exports[`transform base 1`] = `
 "function base(a) {
   let _continueRecursion = true;

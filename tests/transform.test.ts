@@ -15,6 +15,7 @@ import {
   nullishCoalescing,
   ternary,
   combinedLogicalTernary,
+  arrowFunctionNoBody
 } from "../examples/transform.before.js";
 import { mapToTestCases } from "./utils.js";
 
@@ -33,6 +34,7 @@ const cases = mapToTestCases({
   nullishCoalescing,
   ternary,
   combinedLogicalTernary,
+  arrowFunctionNoBody
 });
 
 describe("transform", () => {

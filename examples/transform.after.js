@@ -251,3 +251,18 @@ export function combinedLogicalTernary(a, b) {
     }
   }
 }
+
+// arrow function
+export const arrowFunctionNoBody = a => {
+  let _continueRecursion17 = true;
+  _tailCallLoop17: while (_continueRecursion17) {
+    _continueRecursion17 = false;
+    if (a <= 0) {
+      return a;
+    } else {
+      [a] = [a - 1];
+      _continueRecursion17 = true;
+      continue _tailCallLoop17;
+    }
+  }
+};
