@@ -30,7 +30,7 @@ export function defaultArgInactive(a, b = 0) {
   _tailCallLoop3: while (_continueRecursion3) {
     _continueRecursion3 = false;
     if (a < b) return a;
-    [a, b] = [a - 1, b + 1];
+    [a, b = 0] = [a - 1, b + 1];
     _continueRecursion3 = true;
     continue _tailCallLoop3;
   }
@@ -42,7 +42,7 @@ export function defaultArgActive(a, b = 0) {
   _tailCallLoop4: while (_continueRecursion4) {
     _continueRecursion4 = false;
     if (a < b) return a;
-    [a, b] = [a - 1, 0];
+    [a, b = 0] = [a - 1];
     _continueRecursion4 = true;
     continue _tailCallLoop4;
   }
@@ -54,7 +54,7 @@ export function undefinedArg(a, b) {
   _tailCallLoop5: while (_continueRecursion5) {
     _continueRecursion5 = false;
     if (a < b) return a;
-    [a, b] = [a - 1, undefined];
+    [a, b] = [a - 1];
     _continueRecursion5 = true;
     continue _tailCallLoop5;
   }
@@ -119,7 +119,7 @@ export function fibonacci(n, a = 0, b = 1) {
     } else if (n === 2) {
       return b;
     } else {
-      [n, a, b] = [n - 1, b, a + b];
+      [n, a = 0, b = 1] = [n - 1, b, a + b];
       _continueRecursion10 = true;
       continue _tailCallLoop10;
     }
@@ -136,7 +136,7 @@ export function isPrime(n, d = 2) {
     } else if (d ** 2 > n) {
       return true;
     } else {
-      [n, d] = [n, d + 1];
+      [n, d = 2] = [n, d + 1];
       _continueRecursion11 = true;
       continue _tailCallLoop11;
     }

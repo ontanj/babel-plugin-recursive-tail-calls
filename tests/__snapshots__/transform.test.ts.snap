@@ -49,7 +49,7 @@ exports[`transform defaultArgActive 1`] = `
   _tailCallLoop: while (_continueRecursion) {
     _continueRecursion = false;
     if (a < b) return a;
-    [a, b] = [a - 1, 0];
+    [a, b = 0] = [a - 1];
     _continueRecursion = true;
     continue _tailCallLoop;
   }
@@ -62,7 +62,7 @@ exports[`transform defaultArgInactive 1`] = `
   _tailCallLoop: while (_continueRecursion) {
     _continueRecursion = false;
     if (a < b) return a;
-    [a, b] = [a - 1, b + 1];
+    [a, b = 0] = [a - 1, b + 1];
     _continueRecursion = true;
     continue _tailCallLoop;
   }
@@ -226,7 +226,7 @@ exports[`transform undefinedArg 1`] = `
   _tailCallLoop: while (_continueRecursion) {
     _continueRecursion = false;
     if (a < b) return a;
-    [a, b] = [a - 1, undefined];
+    [a, b] = [a - 1];
     _continueRecursion = true;
     continue _tailCallLoop;
   }

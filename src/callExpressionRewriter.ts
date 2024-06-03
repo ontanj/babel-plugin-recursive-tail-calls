@@ -1,6 +1,7 @@
 import { type NodePath, template } from "@babel/core";
 import { type Scope } from "@babel/traverse";
 import {
+  type ArrayPattern,
   type CallExpression,
   type Expression,
   type Function,
@@ -10,7 +11,6 @@ import {
   type ReturnStatement,
   expressionStatement,
   assignmentExpression,
-  arrayPattern,
   arrayExpression,
   booleanLiteral,
   continueStatement,
@@ -37,8 +37,8 @@ export interface State {
   conditionIdentifier: Identifier;
   /** path of this function */
   functionPath: NodePath<Function>;
-  /** name and default value of function argument */
-  arguments: { identifier: Identifier; defaultValue: Expression }[];
+  /** parameters of this function */
+  parameters: ArrayPattern;
 }
 
 /**
@@ -60,25 +60,13 @@ export const callExpressionRewriter = {
 
     this.recursion = true;
 
-    const numberOfArguments = Math.max(
-      this.arguments.length,
-      path.node.arguments.length,
-    );
-
-    const identifiers = this.arguments.map(({ identifier }) => identifier);
-    const values = Array.from({ length: numberOfArguments }).map((_, index) => {
-      const arg = path.node.arguments[index];
+    const args = path.node.arguments.map((arg) => {
       if (isArgumentPlaceholder(arg) || isJSXNamespacedName(arg))
-        throw new Error("Invalid value type");
-      return arg ?? this.arguments[index].defaultValue;
+        throw new Error("Invalid argument type");
+      return arg;
     });
-
     const updateExpression = expressionStatement(
-      assignmentExpression(
-        "=",
-        arrayPattern(identifiers),
-        arrayExpression(values as Expression[]),
-      ),
+      assignmentExpression("=", this.parameters, arrayExpression(args)),
     );
 
     parentPath.insertBefore(updateExpression);

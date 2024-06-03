@@ -1,5 +1,6 @@
 import { type NodePath, types } from "@babel/core";
 import {
+  arrayPattern,
   isIdentifier,
   isVariableDeclarator,
   type Function,
@@ -27,29 +28,6 @@ export default function ({ types: t }: { types: t }) {
         const conditionIdentifier =
           path.scope.generateUidIdentifier("continue-recursion");
 
-        let args: CallExpressionState["arguments"];
-
-        try {
-          args = path.node.params.map(
-            (param: (typeof path.node.params)[number]) => {
-              if (t.isIdentifier(param)) {
-                return {
-                  identifier: param,
-                  defaultValue: t.identifier("undefined"),
-                };
-              } else if (
-                t.isAssignmentPattern(param) &&
-                t.isIdentifier(param.left)
-              ) {
-                return { identifier: param.left, defaultValue: param.right };
-              }
-              throw new Error("Unsupported param expression");
-            },
-          );
-        } catch (e: unknown) {
-          return;
-        }
-
         if (functionBody.isExpression()) {
           if (!findRecursion(functionBody, functionIdentifier)) return;
           functionBody.replaceWith(
@@ -66,7 +44,7 @@ export default function ({ types: t }: { types: t }) {
           functionIdentifier,
           conditionIdentifier,
           functionPath: path,
-          arguments: args,
+          parameters: arrayPattern(path.node.params),
         };
 
         path.traverse(callExpressionRewriter, state);
