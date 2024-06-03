@@ -20,6 +20,8 @@ import {
   binaryExpression,
   nullLiteral,
   identifier,
+  isArgumentPlaceholder,
+  isJSXNamespacedName,
 } from "@babel/types";
 import { findRecursion } from "./tailRecursionFinder.js";
 import { isRecCall } from "./utils.js";
@@ -64,10 +66,12 @@ export const callExpressionRewriter = {
     );
 
     const identifiers = this.arguments.map(({ identifier }) => identifier);
-    const values = Array.from({ length: numberOfArguments }).map(
-      (_, index) =>
-        path.node.arguments[index] ?? this.arguments[index].defaultValue,
-    );
+    const values = Array.from({ length: numberOfArguments }).map((_, index) => {
+      const arg = path.node.arguments[index];
+      if (isArgumentPlaceholder(arg) || isJSXNamespacedName(arg))
+        throw new Error("Invalid value type");
+      return arg ?? this.arguments[index].defaultValue;
+    });
 
     const updateExpression = expressionStatement(
       assignmentExpression(
