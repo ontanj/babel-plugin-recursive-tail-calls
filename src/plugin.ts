@@ -1,7 +1,5 @@
 import { type NodePath, types } from "@babel/core";
 import {
-  isArrowFunctionExpression,
-  isFunctionDeclaration,
   isIdentifier,
   isVariableDeclarator,
   type Function,
