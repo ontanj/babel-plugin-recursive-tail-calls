@@ -284,3 +284,15 @@ export function wrapAnonymous3() {
     }
   };
 }
+
+// exeeding arguments
+export function exceedingArgs(a, b) {
+  let _continueRecursion22 = true;
+  _tailCallLoop22: while (_continueRecursion22) {
+    _continueRecursion22 = false;
+    if (a > b) return a - b;
+    [a, b] = [a + b, b, console.log("CALL")];
+    _continueRecursion22 = true;
+    continue _tailCallLoop22;
+  }
+}

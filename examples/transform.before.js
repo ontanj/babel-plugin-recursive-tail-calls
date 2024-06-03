@@ -133,8 +133,14 @@ export function wrapAnonymous2() {
 
 // function expression
 export function wrapAnonymous3() {
-  const functionExpression = function(a) {
+  const functionExpression = function (a) {
     if (a <= 0) return a;
     return functionExpression(a - 1);
   };
+}
+
+// exeeding arguments
+export function exceedingArgs(a, b) {
+  if (a > b) return a - b;
+  return exceedingArgs(a + b, b, console.log("CALL"));
 }

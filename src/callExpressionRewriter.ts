@@ -58,18 +58,22 @@ export const callExpressionRewriter = {
 
     this.recursion = true;
 
-    const args = this.arguments.map(({ identifier, defaultValue }, index) => {
-      return {
-        identifier,
-        value: path.node.arguments[index] ?? defaultValue,
-      };
-    });
+    const numberOfArguments = Math.max(
+      this.arguments.length,
+      path.node.arguments.length,
+    );
+
+    const identifiers = this.arguments.map(({ identifier }) => identifier);
+    const values = Array.from({ length: numberOfArguments }).map(
+      (_, index) =>
+        path.node.arguments[index] ?? this.arguments[index].defaultValue,
+    );
 
     const updateExpression = expressionStatement(
       assignmentExpression(
         "=",
-        arrayPattern(args.map(({ identifier }) => identifier)),
-        arrayExpression(args.map(({ value }) => value as Expression)),
+        arrayPattern(identifiers),
+        arrayExpression(values as Expression[]),
       ),
     );
 
