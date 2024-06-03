@@ -1,20 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`transform arrowFunction 1`] = `
-"const arrowFunction = a => {
-  let _continueRecursion = true;
-  _tailCallLoop: while (_continueRecursion) {
-    _continueRecursion = false;
-    if (a <= 0) return a;
-    [a] = [a - 1];
-    _continueRecursion = true;
-    continue _tailCallLoop;
-  }
-};"
-`;
-
-exports[`transform arrowFunctionNoBody 1`] = `"const arrowFunction = a => a <= 0 ? a : arrowFunctionNoBody(a - 1);"`;
-
 exports[`transform base 1`] = `
 "function base(a) {
   let _continueRecursion = true;
@@ -232,5 +217,38 @@ exports[`transform undefinedArg 1`] = `
     _continueRecursion = true;
     continue _tailCallLoop;
   }
+}"
+`;
+
+exports[`transform wrapAnonymous1 1`] = `
+"function wrapAnonymous1() {
+  const arrowFunction = a => {
+    let _continueRecursion2 = true;
+    _tailCallLoop2: while (_continueRecursion2) {
+      _continueRecursion2 = false;
+      if (a <= 0) return a;
+      [a] = [a - 1];
+      _continueRecursion2 = true;
+      continue _tailCallLoop2;
+    }
+  };
+}"
+`;
+
+exports[`transform wrapAnonymous2 1`] = `
+"function wrapAnonymous2() {
+  const arrowFunctionNoBody = a => {
+    let _continueRecursion2 = true;
+    _tailCallLoop2: while (_continueRecursion2) {
+      _continueRecursion2 = false;
+      if (a <= 0) {
+        return a;
+      } else {
+        [a] = [a - 1];
+        _continueRecursion2 = true;
+        continue _tailCallLoop2;
+      }
+    }
+  };
 }"
 `;

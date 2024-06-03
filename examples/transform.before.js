@@ -31,10 +31,12 @@ export function undefinedArg(a, b) {
 }
 
 // arrow function
-export const arrowFunction = (a) => {
-  if (a <= 0) return a;
-  return arrowFunction(a - 1);
-};
+export function wrapAnonymous1() {
+  const arrowFunction = (a) => {
+    if (a <= 0) return a;
+    return arrowFunction(a - 1);
+  };
+}
 
 // nested statements
 export function nestedStatements(a, b) {
@@ -125,5 +127,6 @@ export function combinedLogicalTernary(a, b) {
 }
 
 // arrow function with no body
-export const arrowFunctionNoBody = (a) =>
-  a <= 0 ? a : arrowFunctionNoBody(a - 1);
+export function wrapAnonymous2() {
+  const arrowFunctionNoBody = (a) => (a <= 0 ? a : arrowFunctionNoBody(a - 1));
+}

@@ -6,7 +6,7 @@ import {
   defaultArgInactive,
   defaultArgActive,
   undefinedArg,
-  arrowFunction,
+  wrapAnonymous1,
   nestedStatements,
   multipleReturns,
   noReturn,
@@ -15,7 +15,7 @@ import {
   nullishCoalescing,
   ternary,
   combinedLogicalTernary,
-  arrowFunctionNoBody,
+  wrapAnonymous2,
 } from "../examples/transform.before.js";
 import { mapToTestCases } from "./utils.js";
 
@@ -25,7 +25,7 @@ const cases = mapToTestCases({
   defaultArgInactive,
   defaultArgActive,
   undefinedArg,
-  arrowFunction,
+  wrapAnonymous1,
   nestedStatements,
   multipleReturns,
   noReturn,
@@ -34,7 +34,7 @@ const cases = mapToTestCases({
   nullishCoalescing,
   ternary,
   combinedLogicalTernary,
-  arrowFunctionNoBody,
+  wrapAnonymous2,
 });
 
 describe("transform", () => {
