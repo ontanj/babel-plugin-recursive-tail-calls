@@ -252,3 +252,18 @@ exports[`transform wrapAnonymous2 1`] = `
   };
 }"
 `;
+
+exports[`transform wrapAnonymous3 1`] = `
+"function wrapAnonymous3() {
+  const functionExpression = function (a) {
+    let _continueRecursion2 = true;
+    _tailCallLoop2: while (_continueRecursion2) {
+      _continueRecursion2 = false;
+      if (a <= 0) return a;
+      [a] = [a - 1];
+      _continueRecursion2 = true;
+      continue _tailCallLoop2;
+    }
+  };
+}"
+`;

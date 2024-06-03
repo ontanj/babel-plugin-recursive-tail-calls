@@ -112,7 +112,10 @@ export default function ({ types: t }: { types: t }) {
 function getFunctionIdentifier(functionPath: NodePath<Function>) {
   if (functionPath.isFunctionDeclaration()) {
     return functionPath.node.id;
-  } else if (functionPath.isArrowFunctionExpression()) {
+  } else if (
+    functionPath.isArrowFunctionExpression() ||
+    functionPath.isFunctionExpression()
+  ) {
     if (
       isVariableDeclarator(functionPath.parent) &&
       isIdentifier(functionPath.parent.id) &&

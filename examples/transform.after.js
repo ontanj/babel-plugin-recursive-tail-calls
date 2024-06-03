@@ -270,4 +270,17 @@ export function wrapAnonymous2() {
     }
   };
 }
-;
+
+// function expression
+export function wrapAnonymous3() {
+  const functionExpression = function (a) {
+    let _continueRecursion21 = true;
+    _tailCallLoop21: while (_continueRecursion21) {
+      _continueRecursion21 = false;
+      if (a <= 0) return a;
+      [a] = [a - 1];
+      _continueRecursion21 = true;
+      continue _tailCallLoop21;
+    }
+  };
+}

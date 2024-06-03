@@ -16,6 +16,7 @@ import {
   ternary,
   combinedLogicalTernary,
   wrapAnonymous2,
+  wrapAnonymous3,
 } from "../examples/transform.before.js";
 import { mapToTestCases } from "./utils.js";
 
@@ -35,6 +36,7 @@ const cases = mapToTestCases({
   ternary,
   combinedLogicalTernary,
   wrapAnonymous2,
+  wrapAnonymous3,
 });
 
 describe("transform", () => {

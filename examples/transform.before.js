@@ -130,3 +130,11 @@ export function combinedLogicalTernary(a, b) {
 export function wrapAnonymous2() {
   const arrowFunctionNoBody = (a) => (a <= 0 ? a : arrowFunctionNoBody(a - 1));
 }
+
+// function expression
+export function wrapAnonymous3() {
+  const functionExpression = function(a) {
+    if (a <= 0) return a;
+    return functionExpression(a - 1);
+  };
+}
