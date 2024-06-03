@@ -1,5 +1,11 @@
 import { type NodePath, types } from "@babel/core";
-import { type Function } from "@babel/types";
+import {
+  isArrowFunctionExpression,
+  isFunctionDeclaration,
+  isIdentifier,
+  isVariableDeclarator,
+  type Function,
+} from "@babel/types";
 import {
   callExpressionRewriter,
   type State as CallExpressionState,
@@ -12,7 +18,7 @@ export default function ({ types: t }: { types: t }) {
   return {
     visitor: {
       Function(path: NodePath<Function>) {
-        const functionIdentifier = getFunctionIdentifier(path, t);
+        const functionIdentifier = getFunctionIdentifier(path);
         if (!functionIdentifier) return;
 
         const functionBody = path.get("body");
@@ -105,13 +111,13 @@ export default function ({ types: t }: { types: t }) {
   };
 }
 
-function getFunctionIdentifier(functionPath: NodePath<Function>, t: t) {
-  if (t.isFunctionDeclaration(functionPath.node)) {
+function getFunctionIdentifier(functionPath: NodePath<Function>) {
+  if (functionPath.isFunctionDeclaration()) {
     return functionPath.node.id;
-  } else if (t.isArrowFunctionExpression(functionPath.node)) {
+  } else if (functionPath.isArrowFunctionExpression()) {
     if (
-      t.isVariableDeclarator(functionPath.parent) &&
-      t.isIdentifier(functionPath.parent.id) &&
+      isVariableDeclarator(functionPath.parent) &&
+      isIdentifier(functionPath.parent.id) &&
       functionPath.scope.getBinding(functionPath.parent.id.name)?.constant
     ) {
       return functionPath.parent.id;
