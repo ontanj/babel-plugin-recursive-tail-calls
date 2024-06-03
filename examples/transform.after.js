@@ -252,7 +252,7 @@ export function combinedLogicalTernary(a, b) {
   }
 }
 
-// arrow function
+// arrow function with no body
 export const arrowFunctionNoBody = a => {
   let _continueRecursion17 = true;
   _tailCallLoop17: while (_continueRecursion17) {
