@@ -9,7 +9,7 @@ Download the
 [plugin](https://www.npmjs.com/package/babel-plugin-recursive-tail-calls) from
 npm, using e.g. npm or yarn.
 
-```
+```sh
 npm i babel-plugin-recursive-tail-calls
 ```
 
@@ -33,7 +33,7 @@ This plugin does not implement the feature as mentioned in the language
 specification. Rather, it aims to find all locations where a function calls
 itself in tail position, and rewrites those functions using a loop.
 
-```
+```js
 // before transpilation
 export function f(a) {
   if (a <= 0) {
@@ -54,4 +54,4 @@ export function f(a) {
 }
 ```
 
-See `examples` directory for more examples.
+See [`examples`](examples) directory for more examples.
