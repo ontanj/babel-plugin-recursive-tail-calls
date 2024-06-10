@@ -1,6 +1,6 @@
 import babel from "@babel/core";
 import plugin from "../src/plugin.js";
-import { fibonacci, isPrime } from "../examples/transform.before.js";
+import { fibonacci, isPrime, spread } from "../examples/transform.before.js";
 
 describe("execute", () => {
   it("fibonacci", () => {
@@ -15,5 +15,11 @@ describe("execute", () => {
     const prime = (n: number) => eval(t?.code + `isPrime(${n});`);
     expect(prime(37)).toEqual(true);
     expect(prime(35)).toEqual(false);
+  });
+
+  it("spread", () => {
+    const t = babel.transform(spread.toString(), { plugins: [plugin] });
+    const spreadF = (...ns: number[]) => eval(t?.code + `spread(${ns.join()})`);
+    expect(spreadF(0, 1, 2, 3)).toEqual(3);
   });
 });

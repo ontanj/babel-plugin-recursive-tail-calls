@@ -296,3 +296,15 @@ export function exceedingArgs(a, b) {
     continue _tailCallLoop22;
   }
 }
+
+// rest/spread
+export function spread(a, b, ...c) {
+  let _continueRecursion23 = true;
+  _tailCallLoop23: while (_continueRecursion23) {
+    _continueRecursion23 = false;
+    if (a > b) return a;
+    [a, b, ...c] = [b, ...c, a];
+    _continueRecursion23 = true;
+    continue _tailCallLoop23;
+  }
+}

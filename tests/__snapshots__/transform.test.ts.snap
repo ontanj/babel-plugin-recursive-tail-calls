@@ -204,6 +204,19 @@ exports[`transform nullishCoalescing 1`] = `
 }"
 `;
 
+exports[`transform spread 1`] = `
+"function spread(a, b, ...c) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
+    if (a > b) return a;
+    [a, b, ...c] = [b, ...c, a];
+    _continueRecursion = true;
+    continue _tailCallLoop;
+  }
+}"
+`;
+
 exports[`transform ternary 1`] = `
 "function ternary(a, b, c) {
   let _continueRecursion = true;

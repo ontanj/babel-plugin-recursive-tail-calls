@@ -18,6 +18,7 @@ import {
   wrapAnonymous2,
   wrapAnonymous3,
   exceedingArgs,
+  spread,
 } from "../examples/transform.before.js";
 import { mapToTestCases } from "./utils.js";
 
@@ -39,6 +40,7 @@ const cases = mapToTestCases({
   wrapAnonymous2,
   wrapAnonymous3,
   exceedingArgs,
+  spread,
 });
 
 describe("transform", () => {

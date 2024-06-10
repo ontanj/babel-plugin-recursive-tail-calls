@@ -144,3 +144,9 @@ export function exceedingArgs(a, b) {
   if (a > b) return a - b;
   return exceedingArgs(a + b, b, console.log("CALL"));
 }
+
+// rest/spread
+export function spread(a, b, ...c) {
+  if (a > b) return a;
+  return spread(b, ...c, a);
+}
