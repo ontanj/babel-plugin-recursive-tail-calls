@@ -1,11 +1,8 @@
 import babel from "@babel/core";
 import plugin from "../src/plugin.js";
 import {
-  base,
-  multipleArgs,
-  defaultArgInactive,
-  defaultArgActive,
-  undefinedArg,
+  recursion,
+  defaultParameter,
   wrapAnonymous1,
   nestedStatements,
   multipleReturns,
@@ -23,11 +20,8 @@ import {
 import { mapToTestCases } from "./utils.js";
 
 const cases = mapToTestCases({
-  base,
-  multipleArgs,
-  defaultArgInactive,
-  defaultArgActive,
-  undefinedArg,
+  recursion,
+  defaultParameter,
   wrapAnonymous1,
   nestedStatements,
   multipleReturns,
