@@ -35,7 +35,7 @@ itself in tail position, and rewrites those functions using a loop.
 
 ```js
 // before transpilation
-export function f(a) {
+function f(a) {
   if (a <= 0) {
     return a;
   }
@@ -43,12 +43,15 @@ export function f(a) {
 }
 
 // after transpilation
-export function f(a) {
-  _tailCallLoop: while (true) {
+function f(a) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
     if (a <= 0) {
       return a;
     }
     [a] = [a - 1];
+    _continueRecursion = true;
     continue _tailCallLoop;
   }
 }
