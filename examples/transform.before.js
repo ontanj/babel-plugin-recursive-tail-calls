@@ -1,21 +1,7 @@
-// simple case
+// trivial case
 export function recursion(a, b) {
   if (a < b) return a;
   return recursion(a - 1, b + 1);
-}
-
-// default parameter value
-export function defaultParameter(a, b = 0) {
-  if (a < b) return a;
-  return defaultParameter(a - 1);
-}
-
-// arrow function
-export function wrapAnonymous1() {
-  const arrowFunction = (a) => {
-    if (a <= 0) return a;
-    return arrowFunction(a - 1);
-  };
 }
 
 // nested statements
@@ -39,28 +25,6 @@ export function multipleReturns(a, b, c) {
   return multipleReturns(a + 1, b + 1, c);
 }
 
-// fibonacci
-export function fibonacci(n, a = 0, b = 1) {
-  if (n === 1) {
-    return a;
-  } else if (n === 2) {
-    return b;
-  } else {
-    return fibonacci(n - 1, b, a + b);
-  }
-}
-
-// prime number
-export function isPrime(n, d = 2) {
-  if (n % d === 0) {
-    return false;
-  } else if (d ** 2 > n) {
-    return true;
-  } else {
-    return isPrime(n, d + 1);
-  }
-}
-
 // no return
 export function noReturn(a, b) {
   if (a < 10) {
@@ -69,6 +33,28 @@ export function noReturn(a, b) {
     return a;
   }
 }
+
+/* Arguments and parameters */
+
+// default parameter value
+export function defaultParameter(a, b = 0) {
+  if (a < b) return a;
+  return defaultParameter(a - 1);
+}
+
+// rest/spread
+export function spread(a, b, ...c) {
+  if (a > b) return a;
+  return spread(b, ...c, a);
+}
+
+// exeeding arguments
+export function exceedingArgs(a, b) {
+  if (a > b) return a - b;
+  return exceedingArgs(a + b, b, console.log("CALL"));
+}
+
+/* Logical and conditional */
 
 // logical and
 export function logicalAnd(a, b) {
@@ -106,6 +92,16 @@ export function combinedLogicalTernary(a, b) {
   );
 }
 
+/* Anonymous functions */
+
+// arrow function
+export function wrapAnonymous1() {
+  const arrowFunction = (a) => {
+    if (a <= 0) return a;
+    return arrowFunction(a - 1);
+  };
+}
+
 // arrow function with no body
 export function wrapAnonymous2() {
   const arrowFunctionNoBody = (a) => (a <= 0 ? a : arrowFunctionNoBody(a - 1));
@@ -113,20 +109,32 @@ export function wrapAnonymous2() {
 
 // function expression
 export function wrapAnonymous3() {
-  const functionExpression = function (a) {
+  const functionExpression = function(a) {
     if (a <= 0) return a;
     return functionExpression(a - 1);
   };
 }
 
-// exeeding arguments
-export function exceedingArgs(a, b) {
-  if (a > b) return a - b;
-  return exceedingArgs(a + b, b, console.log("CALL"));
+/* Real-world examples */
+
+// fibonacci
+export function fibonacci(n, a = 0, b = 1) {
+  if (n === 1) {
+    return a;
+  } else if (n === 2) {
+    return b;
+  } else {
+    return fibonacci(n - 1, b, a + b);
+  }
 }
 
-// rest/spread
-export function spread(a, b, ...c) {
-  if (a > b) return a;
-  return spread(b, ...c, a);
+// prime number
+export function isPrime(n, d = 2) {
+  if (n % d === 0) {
+    return false;
+  } else if (d ** 2 > n) {
+    return true;
+  } else {
+    return isPrime(n, d + 1);
+  }
 }

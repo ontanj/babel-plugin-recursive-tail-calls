@@ -1,4 +1,4 @@
-// simple case
+// trivial case
 export function recursion(a, b) {
   let _continueRecursion = true;
   _tailCallLoop: while (_continueRecursion) {
@@ -10,42 +10,16 @@ export function recursion(a, b) {
   }
 }
 
-// default parameter value
-export function defaultParameter(a, b = 0) {
+// nested statements
+export function nestedStatements(a, b) {
   let _continueRecursion2 = true;
   _tailCallLoop2: while (_continueRecursion2) {
     _continueRecursion2 = false;
-    if (a < b) return a;
-    [a, b = 0] = [a - 1];
-    _continueRecursion2 = true;
-    continue _tailCallLoop2;
-  }
-}
-
-// arrow function
-export function wrapAnonymous1() {
-  const arrowFunction = a => {
-    let _continueRecursion4 = true;
-    _tailCallLoop4: while (_continueRecursion4) {
-      _continueRecursion4 = false;
-      if (a <= 0) return a;
-      [a] = [a - 1];
-      _continueRecursion4 = true;
-      continue _tailCallLoop4;
-    }
-  };
-}
-
-// nested statements
-export function nestedStatements(a, b) {
-  let _continueRecursion5 = true;
-  _tailCallLoop5: while (_continueRecursion5) {
-    _continueRecursion5 = false;
     if (a > b) {
       if (a > 0) {
         [a, b] = [a - 1, b];
-        _continueRecursion5 = true;
-        continue _tailCallLoop5;
+        _continueRecursion2 = true;
+        continue _tailCallLoop2;
       }
       return a - b;
     }
@@ -55,84 +29,90 @@ export function nestedStatements(a, b) {
 
 // multiple returns
 export function multipleReturns(a, b, c) {
-  let _continueRecursion6 = true;
-  _tailCallLoop6: while (_continueRecursion6) {
-    _continueRecursion6 = false;
+  let _continueRecursion3 = true;
+  _tailCallLoop3: while (_continueRecursion3) {
+    _continueRecursion3 = false;
     if (a < 0) return a;
     if (b < 0) {
       const n = b + c;
       [a, b, c] = [n, b, c + 1];
-      _continueRecursion6 = true;
-      continue _tailCallLoop6;
+      _continueRecursion3 = true;
+      continue _tailCallLoop3;
     }
     [a, b, c] = [a + 1, b + 1, c];
-    _continueRecursion6 = true;
-    continue _tailCallLoop6;
-  }
-}
-
-// fibonacci
-export function fibonacci(n, a = 0, b = 1) {
-  let _continueRecursion7 = true;
-  _tailCallLoop7: while (_continueRecursion7) {
-    _continueRecursion7 = false;
-    if (n === 1) {
-      return a;
-    } else if (n === 2) {
-      return b;
-    } else {
-      [n, a = 0, b = 1] = [n - 1, b, a + b];
-      _continueRecursion7 = true;
-      continue _tailCallLoop7;
-    }
-  }
-}
-
-// prime number
-export function isPrime(n, d = 2) {
-  let _continueRecursion8 = true;
-  _tailCallLoop8: while (_continueRecursion8) {
-    _continueRecursion8 = false;
-    if (n % d === 0) {
-      return false;
-    } else if (d ** 2 > n) {
-      return true;
-    } else {
-      [n, d = 2] = [n, d + 1];
-      _continueRecursion8 = true;
-      continue _tailCallLoop8;
-    }
+    _continueRecursion3 = true;
+    continue _tailCallLoop3;
   }
 }
 
 // no return
 export function noReturn(a, b) {
-  let _continueRecursion9 = true;
-  _tailCallLoop9: while (_continueRecursion9) {
-    _continueRecursion9 = false;
+  let _continueRecursion4 = true;
+  _tailCallLoop4: while (_continueRecursion4) {
+    _continueRecursion4 = false;
     if (a < 10) {
       [a, b] = [a + b, b];
-      _continueRecursion9 = true;
-      continue _tailCallLoop9;
+      _continueRecursion4 = true;
+      continue _tailCallLoop4;
     } else if (a % 2 === 0) {
       return a;
     }
   }
 }
 
+/* Arguments and parameters */
+
+// default parameter value
+export function defaultParameter(a, b = 0) {
+  let _continueRecursion5 = true;
+  _tailCallLoop5: while (_continueRecursion5) {
+    _continueRecursion5 = false;
+    if (a < b) return a;
+    [a, b = 0] = [a - 1];
+    _continueRecursion5 = true;
+    continue _tailCallLoop5;
+  }
+}
+
+// rest/spread
+export function spread(a, b, ...c) {
+  let _continueRecursion6 = true;
+  _tailCallLoop6: while (_continueRecursion6) {
+    _continueRecursion6 = false;
+    if (a > b) return a;
+    [a, b, ...c] = [b, ...c, a];
+    _continueRecursion6 = true;
+    continue _tailCallLoop6;
+  }
+}
+
+// exeeding arguments
+export function exceedingArgs(a, b) {
+  let _continueRecursion7 = true;
+  _tailCallLoop7: while (_continueRecursion7) {
+    _continueRecursion7 = false;
+    if (a > b) return a - b;
+    [a, b] = [a + b, b, console.log("CALL")];
+    _continueRecursion7 = true;
+    continue _tailCallLoop7;
+  }
+}
+
+/* Logical and conditional */
+
 // logical and
 export function logicalAnd(a, b) {
-  let _continueRecursion10 = true;
-  _tailCallLoop10: while (_continueRecursion10) {
-    _continueRecursion10 = false;
+  let _continueRecursion8 = true;
+  _tailCallLoop8: while (_continueRecursion8) {
+    _continueRecursion8 = false;
     if (a > 100) {
       return b;
     }
     const _left = a;
     if (_left) {
       [a, b] = [a + 1, b + 1];
-      _continueRecursion10 = true;
-      continue _tailCallLoop10;
+      _continueRecursion8 = true;
+      continue _tailCallLoop8;
     } else {
       return _left;
     }
@@ -141,9 +121,9 @@ export function logicalAnd(a, b) {
 
 // logical or
 export function logicalOr(a, b) {
-  let _continueRecursion11 = true;
-  _tailCallLoop11: while (_continueRecursion11) {
-    _continueRecursion11 = false;
+  let _continueRecursion9 = true;
+  _tailCallLoop9: while (_continueRecursion9) {
+    _continueRecursion9 = false;
     if (a > 100) {
       return b;
     }
@@ -152,48 +132,48 @@ export function logicalOr(a, b) {
       return _left2;
     } else {
       [a, b] = [a + 1, b + 1];
-      _continueRecursion11 = true;
-      continue _tailCallLoop11;
+      _continueRecursion9 = true;
+      continue _tailCallLoop9;
     }
   }
 }
 
 // nullish coalescing
 export function nullishCoalescing(a, b) {
-  let _continueRecursion12 = true;
-  _tailCallLoop12: while (_continueRecursion12) {
-    _continueRecursion12 = false;
+  let _continueRecursion10 = true;
+  _tailCallLoop10: while (_continueRecursion10) {
+    _continueRecursion10 = false;
     const _left3 = a;
     if (a == null || a == undefined) {
       return _left3;
     } else {
       [a, b] = [b > 100 ? b : null, b + 1];
-      _continueRecursion12 = true;
-      continue _tailCallLoop12;
+      _continueRecursion10 = true;
+      continue _tailCallLoop10;
     }
   }
 }
 
 // ternary
 export function ternary(a, b, c) {
-  let _continueRecursion13 = true;
-  _tailCallLoop13: while (_continueRecursion13) {
-    _continueRecursion13 = false;
+  let _continueRecursion11 = true;
+  _tailCallLoop11: while (_continueRecursion11) {
+    _continueRecursion11 = false;
     if (a > 10) {
       return c;
     } else {
       [a, b, c] = [a + b, b, c + a];
-      _continueRecursion13 = true;
-      continue _tailCallLoop13;
+      _continueRecursion11 = true;
+      continue _tailCallLoop11;
     }
   }
 }
 
 // combined logical ternary
 export function combinedLogicalTernary(a, b) {
-  let _continueRecursion14 = true;
-  _tailCallLoop14: while (_continueRecursion14) {
-    _continueRecursion14 = false;
+  let _continueRecursion12 = true;
+  _tailCallLoop12: while (_continueRecursion12) {
+    _continueRecursion12 = false;
     const _left4 = a > 0;
     if (_left4) {
       if (a > 10) {
@@ -202,18 +182,34 @@ export function combinedLogicalTernary(a, b) {
           return _left5;
         } else {
           [a, b] = [a + 1, (b + 1) % 5];
-          _continueRecursion14 = true;
-          continue _tailCallLoop14;
+          _continueRecursion12 = true;
+          continue _tailCallLoop12;
         }
       } else {
         [a, b] = [a + 1, (b + 2) % 2];
-        _continueRecursion14 = true;
-        continue _tailCallLoop14;
+        _continueRecursion12 = true;
+        continue _tailCallLoop12;
       }
     } else {
       return _left4;
     }
   }
+}
+
+/* Anonymous functions */
+
+// arrow function
+export function wrapAnonymous1() {
+  const arrowFunction = a => {
+    let _continueRecursion14 = true;
+    _tailCallLoop14: while (_continueRecursion14) {
+      _continueRecursion14 = false;
+      if (a <= 0) return a;
+      [a] = [a - 1];
+      _continueRecursion14 = true;
+      continue _tailCallLoop14;
+    }
+  };
 }
 
 // arrow function with no body
@@ -247,26 +243,38 @@ export function wrapAnonymous3() {
   };
 }
 
-// exeeding arguments
-export function exceedingArgs(a, b) {
+/* Real-world examples */
+
+// fibonacci
+export function fibonacci(n, a = 0, b = 1) {
   let _continueRecursion19 = true;
   _tailCallLoop19: while (_continueRecursion19) {
     _continueRecursion19 = false;
-    if (a > b) return a - b;
-    [a, b] = [a + b, b, console.log("CALL")];
-    _continueRecursion19 = true;
-    continue _tailCallLoop19;
+    if (n === 1) {
+      return a;
+    } else if (n === 2) {
+      return b;
+    } else {
+      [n, a = 0, b = 1] = [n - 1, b, a + b];
+      _continueRecursion19 = true;
+      continue _tailCallLoop19;
+    }
   }
 }
 
-// rest/spread
-export function spread(a, b, ...c) {
+// prime number
+export function isPrime(n, d = 2) {
   let _continueRecursion20 = true;
   _tailCallLoop20: while (_continueRecursion20) {
     _continueRecursion20 = false;
-    if (a > b) return a;
-    [a, b, ...c] = [b, ...c, a];
-    _continueRecursion20 = true;
-    continue _tailCallLoop20;
+    if (n % d === 0) {
+      return false;
+    } else if (d ** 2 > n) {
+      return true;
+    } else {
+      [n, d = 2] = [n, d + 1];
+      _continueRecursion20 = true;
+      continue _tailCallLoop20;
+    }
   }
 }
