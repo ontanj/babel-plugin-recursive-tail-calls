@@ -5,16 +5,18 @@ exports[`transform combinedLogicalTernary 1`] = `
   let _continueRecursion = true;
   _tailCallLoop: while (_continueRecursion) {
     _continueRecursion = false;
-    const _left = a > 0;
-    if (_left) {
+    const _symbol = Symbol();
+    const _evaluation = a > 0 && _symbol;
+    if (_evaluation === _symbol) {
       if (a > 10) {
-        const _left2 = b;
-        if (_left2) {
-          return _left2;
-        } else {
+        const _symbol2 = Symbol();
+        const _evaluation2 = b || _symbol2;
+        if (_evaluation2 === _symbol2) {
           [a, b] = [a + 1, (b + 1) % 5];
           _continueRecursion = true;
           continue _tailCallLoop;
+        } else {
+          return _evaluation2;
         }
       } else {
         [a, b] = [a + 1, (b + 2) % 2];
@@ -22,7 +24,7 @@ exports[`transform combinedLogicalTernary 1`] = `
         continue _tailCallLoop;
       }
     } else {
-      return _left;
+      return _evaluation;
     }
   }
 }"
@@ -62,13 +64,14 @@ exports[`transform logicalAnd 1`] = `
     if (a > 100) {
       return b;
     }
-    const _left = a;
-    if (_left) {
+    const _symbol = Symbol();
+    const _evaluation = a && _symbol;
+    if (_evaluation === _symbol) {
       [a, b] = [a + 1, b + 1];
       _continueRecursion = true;
       continue _tailCallLoop;
     } else {
-      return _left;
+      return _evaluation;
     }
   }
 }"
@@ -82,13 +85,14 @@ exports[`transform logicalOr 1`] = `
     if (a > 100) {
       return b;
     }
-    const _left = a;
-    if (_left) {
-      return _left;
-    } else {
+    const _symbol = Symbol();
+    const _evaluation = a || _symbol;
+    if (_evaluation === _symbol) {
       [a, b] = [a + 1, b + 1];
       _continueRecursion = true;
       continue _tailCallLoop;
+    } else {
+      return _evaluation;
     }
   }
 }"

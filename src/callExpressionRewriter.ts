@@ -1,13 +1,11 @@
-import { type NodePath, template } from "@babel/core";
+import { type NodePath } from "@babel/core";
 import { type Scope } from "@babel/traverse";
 import {
   type ArrayPattern,
   type CallExpression,
-  type Expression,
   type Function,
   type Identifier,
   type LogicalExpression,
-  type Statement,
   type ReturnStatement,
   expressionStatement,
   assignmentExpression,
@@ -18,10 +16,13 @@ import {
   variableDeclarator,
   logicalExpression,
   binaryExpression,
-  nullLiteral,
   identifier,
   isArgumentPlaceholder,
   isJSXNamespacedName,
+  callExpression,
+  ifStatement,
+  returnStatement,
+  blockStatement,
 } from "@babel/types";
 import { findRecursion } from "./tailRecursionFinder.js";
 import { isRecCall } from "./utils.js";
@@ -102,10 +103,10 @@ export const callExpressionRewriter = {
       );
     } else if (returnExpression.isConditionalExpression()) {
       path.replaceWith(
-        buildIfStatement(
+        ifStatement(
           returnExpression.node.test,
-          returnExpression.node.consequent,
-          returnExpression.node.alternate,
+          blockStatement([returnStatement(returnExpression.node.consequent)]),
+          blockStatement([returnStatement(returnExpression.node.alternate)]),
         ),
       );
     }
@@ -116,22 +117,6 @@ export const callExpressionRewriter = {
     path.skip();
   },
 };
-
-const ifTemplate = template.statement(`
-  if (%%condition%%) {
-    return %%caseTrue%%;
-  } else {
-    return %%caseFalse%%;
-  }
-`);
-
-function buildIfStatement(
-  condition: Expression,
-  caseTrue: Expression,
-  caseFalse: Expression,
-) {
-  return ifTemplate({ condition, caseTrue, caseFalse });
-}
 
 /**
  * Rewrite a logical expression to an explicit `IfStatement`
@@ -144,28 +129,26 @@ function logicalExprRewrite(
   }: Pick<LogicalExpression, "left" | "right" | "operator">,
   scope: Scope,
 ) {
-  const resultIdentifier = scope.generateUidIdentifier("left");
-  // assign left to a variable so we don't evaluate it twice
-  const resultDeclaration = variableDeclaration("const", [
-    variableDeclarator(resultIdentifier, left),
-  ]);
-
-  let ifStatement: Statement;
-  if (operator === "&&")
-    ifStatement = buildIfStatement(resultIdentifier, right, resultIdentifier);
-  else if (operator === "||")
-    ifStatement = buildIfStatement(resultIdentifier, resultIdentifier, right);
-  else if (operator === "??")
-    ifStatement = buildIfStatement(
-      logicalExpression(
-        "||",
-        binaryExpression("==", left, nullLiteral()),
-        binaryExpression("==", left, identifier("undefined")),
+  const symbolIdentifier = scope.generateUidIdentifier("symbol");
+  const logicalResultIdentifier = scope.generateUidIdentifier("evaluation");
+  return [
+    // declare symbol
+    variableDeclaration("const", [
+      variableDeclarator(
+        symbolIdentifier,
+        callExpression(identifier("Symbol"), []),
       ),
-      resultIdentifier,
-      right,
-    );
-  else throw new Error("Unknown LogicalExpression operator: " + operator);
-
-  return [resultDeclaration, ifStatement];
+    ]),
+    // evaluate logical expression with symbol and store result
+    variableDeclaration("const", [
+      variableDeclarator(
+        logicalResultIdentifier,
+        logicalExpression(operator, left, symbolIdentifier),
+      ),
+    ]),
+    ifStatement(
+      binaryExpression("===", logicalResultIdentifier, symbolIdentifier),
+      blockStatement([returnStatement(right)]),
+      blockStatement([returnStatement(logicalResultIdentifier)])),
+  ];
 }

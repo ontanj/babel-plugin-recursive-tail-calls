@@ -108,13 +108,14 @@ export function logicalAnd(a, b) {
     if (a > 100) {
       return b;
     }
-    const _left = a;
-    if (_left) {
+    const _symbol = Symbol();
+    const _evaluation = a && _symbol;
+    if (_evaluation === _symbol) {
       [a, b] = [a + 1, b + 1];
       _continueRecursion8 = true;
       continue _tailCallLoop8;
     } else {
-      return _left;
+      return _evaluation;
     }
   }
 }
@@ -127,13 +128,14 @@ export function logicalOr(a, b) {
     if (a > 100) {
       return b;
     }
-    const _left2 = a;
-    if (_left2) {
-      return _left2;
-    } else {
+    const _symbol2 = Symbol();
+    const _evaluation2 = a || _symbol2;
+    if (_evaluation2 === _symbol2) {
       [a, b] = [a + 1, b + 1];
       _continueRecursion9 = true;
       continue _tailCallLoop9;
+    } else {
+      return _evaluation2;
     }
   }
 }
@@ -143,13 +145,14 @@ export function nullishCoalescing(a, b) {
   let _continueRecursion10 = true;
   _tailCallLoop10: while (_continueRecursion10) {
     _continueRecursion10 = false;
-    const _left3 = a;
-    if (a == null || a == undefined) {
-      return _left3;
-    } else {
+    const _symbol3 = Symbol();
+    const _evaluation3 = a ?? _symbol3;
+    if (_evaluation3 === _symbol3) {
       [a, b] = [b > 100 ? b : null, b + 1];
       _continueRecursion10 = true;
       continue _tailCallLoop10;
+    } else {
+      return _evaluation3;
     }
   }
 }
@@ -174,16 +177,18 @@ export function combinedLogicalTernary(a, b) {
   let _continueRecursion12 = true;
   _tailCallLoop12: while (_continueRecursion12) {
     _continueRecursion12 = false;
-    const _left4 = a > 0;
-    if (_left4) {
+    const _symbol4 = Symbol();
+    const _evaluation4 = a > 0 && _symbol4;
+    if (_evaluation4 === _symbol4) {
       if (a > 10) {
-        const _left5 = b;
-        if (_left5) {
-          return _left5;
-        } else {
+        const _symbol5 = Symbol();
+        const _evaluation5 = b || _symbol5;
+        if (_evaluation5 === _symbol5) {
           [a, b] = [a + 1, (b + 1) % 5];
           _continueRecursion12 = true;
           continue _tailCallLoop12;
+        } else {
+          return _evaluation5;
         }
       } else {
         [a, b] = [a + 1, (b + 2) % 2];
@@ -191,7 +196,7 @@ export function combinedLogicalTernary(a, b) {
         continue _tailCallLoop12;
       }
     } else {
-      return _left4;
+      return _evaluation4;
     }
   }
 }
