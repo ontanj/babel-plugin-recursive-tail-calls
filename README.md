@@ -57,9 +57,12 @@ function f(a) {
 }
 ```
 
-### Support
+### Supported scenarios
 
-See [`examples`](examples) directory for complete examples and their transformations.
+This plugin aims to support all scenarios where a recursive tail call can
+occur. Below are some examples.
+See [`examples`](examples) directory for complete examples and their
+transformations.
 
 #### Tail call
 
