@@ -71,7 +71,14 @@ export const callExpressionRewriter = {
         ),
       );
     } else if (returnExpression.isCallExpression()) {
-      path.replaceWithMultiple(callExprRewrite(this, returnExpression));
+      path.replaceWithMultiple(
+        callExprRewrite(
+          returnExpression,
+          this.parameters,
+          this.conditionIdentifier,
+          this.labelIdentifier,
+        ),
+      );
     }
   },
 
@@ -122,8 +129,10 @@ function logicalExprRewrite(
  * an assignment for function parameters together with a `ContinueStatement`
  */
 function callExprRewrite(
-  state: State,
   path: NodePath<CallExpression>,
+  parameters: ArrayPattern,
+  conditionIdentifier: Identifier,
+  labelIdentifier: Identifier,
 ): Statement[] {
   const args = path.node.arguments.map((arg) => {
     if (isArgumentPlaceholder(arg) || isJSXNamespacedName(arg))
@@ -134,16 +143,12 @@ function callExprRewrite(
   return [
     // update arguments
     expressionStatement(
-      assignmentExpression("=", state.parameters, arrayExpression(args)),
+      assignmentExpression("=", parameters, arrayExpression(args)),
     ),
     // set loop condition
     expressionStatement(
-      assignmentExpression(
-        "=",
-        state.conditionIdentifier,
-        booleanLiteral(true),
-      ),
+      assignmentExpression("=", conditionIdentifier, booleanLiteral(true)),
     ),
-    continueStatement(state.labelIdentifier),
+    continueStatement(labelIdentifier),
   ];
 }
