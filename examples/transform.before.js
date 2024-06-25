@@ -115,7 +115,7 @@ export function wrapAnonymous2() {
 
 // function expression
 export function wrapAnonymous3() {
-  const functionExpression = function(a) {
+  const functionExpression = function (a) {
     if (a <= 0) return a;
     return functionExpression(a - 1);
   };

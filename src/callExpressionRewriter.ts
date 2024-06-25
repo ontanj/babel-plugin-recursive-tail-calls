@@ -71,9 +71,7 @@ export const callExpressionRewriter = {
         ),
       );
     } else if (returnExpression.isCallExpression()) {
-      path.replaceWithMultiple(
-        callExprRewrite(this, returnExpression)
-      );
+      path.replaceWithMultiple(callExprRewrite(this, returnExpression));
     }
   },
 
@@ -114,7 +112,8 @@ function logicalExprRewrite(
     ifStatement(
       binaryExpression("===", logicalResultIdentifier, symbolIdentifier),
       blockStatement([returnStatement(right)]),
-      blockStatement([returnStatement(logicalResultIdentifier)])),
+      blockStatement([returnStatement(logicalResultIdentifier)]),
+    ),
   ];
 }
 
@@ -122,7 +121,10 @@ function logicalExprRewrite(
  * If `CallExpression` is a recursive call in tail position, replace it with
  * an assignment for function parameters together with a `ContinueStatement`
  */
-function callExprRewrite(state: State, path: NodePath<CallExpression>): Statement[] {
+function callExprRewrite(
+  state: State,
+  path: NodePath<CallExpression>,
+): Statement[] {
   const args = path.node.arguments.map((arg) => {
     if (isArgumentPlaceholder(arg) || isJSXNamespacedName(arg))
       throw new Error("Invalid argument type");
@@ -142,7 +144,6 @@ function callExprRewrite(state: State, path: NodePath<CallExpression>): Statemen
         booleanLiteral(true),
       ),
     ),
-    continueStatement(state.labelIdentifier)
+    continueStatement(state.labelIdentifier),
   ];
 }
-
