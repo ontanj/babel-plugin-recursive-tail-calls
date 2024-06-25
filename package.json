@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-recursive-tail-calls",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "A babel plugin for performing tail call optimization in recursive functions.",
   "keywords": [
     "tail call optimization",
