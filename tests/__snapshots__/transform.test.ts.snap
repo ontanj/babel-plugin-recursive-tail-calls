@@ -135,6 +135,21 @@ exports[`transform nestedStatements 1`] = `
 }"
 `;
 
+exports[`transform noBlock 1`] = `
+"function noBlock(a, b) {
+  let _continueRecursion = true;
+  _tailCallLoop: while (_continueRecursion) {
+    _continueRecursion = false;
+    if (a < 10) {
+      [a, b] = [a + b, b];
+      _continueRecursion = true;
+      continue _tailCallLoop;
+    }
+    return a;
+  }
+}"
+`;
+
 exports[`transform noReturn 1`] = `
 "function noReturn(a, b) {
   let _continueRecursion = true;

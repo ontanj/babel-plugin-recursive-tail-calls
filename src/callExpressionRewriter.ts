@@ -7,6 +7,7 @@ import {
   type Identifier,
   type LogicalExpression,
   type ReturnStatement,
+  type Statement,
   expressionStatement,
   assignmentExpression,
   arrayExpression,
@@ -47,47 +48,6 @@ export interface State {
  * `CallExpression`s to be loop based.
  */
 export const callExpressionRewriter = {
-  /**
-   * If `CallExpression` is a recursive call in tail position, replace it with
-   * an assignment for function parameters together with a `ContinueStatement`
-   */
-  CallExpression(this: State, path: NodePath<CallExpression>) {
-    const callsItself = isRecCall(path, this.functionIdentifier);
-    const parentPath = path.parentPath;
-    const isLast = parentPath.isReturnStatement();
-    const shouldOptimize = callsItself && isLast;
-
-    if (!shouldOptimize) return;
-
-    this.recursion = true;
-
-    const args = path.node.arguments.map((arg) => {
-      if (isArgumentPlaceholder(arg) || isJSXNamespacedName(arg))
-        throw new Error("Invalid argument type");
-      return arg;
-    });
-    const updateExpression = expressionStatement(
-      assignmentExpression("=", this.parameters, arrayExpression(args)),
-    );
-
-    parentPath.insertBefore(updateExpression);
-    parentPath.insertBefore(
-      expressionStatement(
-        assignmentExpression(
-          "=",
-          this.conditionIdentifier,
-          booleanLiteral(true),
-        ),
-      ),
-    );
-    parentPath.insertBefore(continueStatement(this.labelIdentifier));
-    parentPath.remove();
-  },
-
-  /**
-   * If `ReturnStatement` is a construct that contains a recursive call in
-   * tail position, such as `&&` or `? :`, rewrite it to be explicit.
-   */
   ReturnStatement(this: State, path: NodePath<ReturnStatement>) {
     const argument = path.get("argument");
     if (
@@ -95,6 +55,7 @@ export const callExpressionRewriter = {
       !findRecursion(argument, this.functionIdentifier)
     )
       return;
+    this.recursion = true;
 
     const returnExpression = path.get("argument");
     if (returnExpression.isLogicalExpression()) {
@@ -108,6 +69,10 @@ export const callExpressionRewriter = {
           blockStatement([returnStatement(returnExpression.node.consequent)]),
           blockStatement([returnStatement(returnExpression.node.alternate)]),
         ),
+      );
+    } else if (returnExpression.isCallExpression()) {
+      path.replaceWithMultiple(
+        callExprRewrite(this, returnExpression)
       );
     }
   },
@@ -152,3 +117,32 @@ function logicalExprRewrite(
       blockStatement([returnStatement(logicalResultIdentifier)])),
   ];
 }
+
+/**
+ * If `CallExpression` is a recursive call in tail position, replace it with
+ * an assignment for function parameters together with a `ContinueStatement`
+ */
+function callExprRewrite(state: State, path: NodePath<CallExpression>): Statement[] {
+  const args = path.node.arguments.map((arg) => {
+    if (isArgumentPlaceholder(arg) || isJSXNamespacedName(arg))
+      throw new Error("Invalid argument type");
+    return arg;
+  });
+
+  return [
+    // update arguments
+    expressionStatement(
+      assignmentExpression("=", state.parameters, arrayExpression(args)),
+    ),
+    // set loop condition
+    expressionStatement(
+      assignmentExpression(
+        "=",
+        state.conditionIdentifier,
+        booleanLiteral(true),
+      ),
+    ),
+    continueStatement(state.labelIdentifier)
+  ];
+}
+

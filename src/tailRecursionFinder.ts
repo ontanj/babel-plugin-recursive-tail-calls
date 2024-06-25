@@ -37,6 +37,7 @@ export function findRecursion(
     found: false,
     functionIdentifier,
   };
-  path.traverse(tailRecursionFinder, state);
+  // traverse omits the current node, traverse parent instead
+  path.parentPath.traverse(tailRecursionFinder, state);
   return state.found;
 }

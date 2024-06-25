@@ -34,6 +34,12 @@ export function noReturn(a, b) {
   }
 }
 
+// no block statement
+export function noBlock(a, b) {
+  if (a < 10) return noBlock(a + b, b);
+  return a;
+}
+
 /* Arguments and parameters */
 
 // default parameter value
@@ -109,7 +115,7 @@ export function wrapAnonymous2() {
 
 // function expression
 export function wrapAnonymous3() {
-  const functionExpression = function (a) {
+  const functionExpression = function(a) {
     if (a <= 0) return a;
     return functionExpression(a - 1);
   };
